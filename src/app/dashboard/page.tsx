@@ -23,7 +23,7 @@ function DashboardPageContent() {
           Top Career Paths For You
         </h2>
         <p className="mt-2 text-muted-foreground">
-          Based on your profile, here are some recommended career paths.
+          Based on Current Trends, here are some recommended career paths.
         </p>
       </div>
       <CareerPaths />
