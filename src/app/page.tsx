@@ -15,8 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useAuth, FirebaseClientProvider, useUser } from '@/firebase';
+import { FirebaseClientProvider, useUser } from '@/firebase';
 
 const features = [
   {
@@ -52,32 +51,23 @@ const features = [
 ];
 
 function LandingPageContent() {
-  const auth = useAuth();
   const { user } = useUser();
   const router = useRouter();
 
   if (user) {
     router.push('/dashboard');
+    return null;
   }
   
-  const handleSignIn = async () => {
-    if (auth) {
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        console.error("Authentication error:", error);
-      }
-    }
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <Link href="/">
             <Logo />
         </Link>
-        <Button onClick={handleSignIn}>Sign In</Button>
+        <Button asChild>
+            <Link href="/login">Sign In</Link>
+        </Button>
       </header>
 
       <main className="flex-grow">
@@ -90,9 +80,11 @@ function LandingPageContent() {
               Empowering every self-learner with AI-driven career guidance. Get personalized insights, practice interviews, and discover your ideal career path.
             </p>
             <div className="mt-8 flex justify-center gap-4">
-              <Button onClick={handleSignIn} size="lg">
+               <Button asChild size="lg">
+                <Link href="/login">
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>
