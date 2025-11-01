@@ -2,18 +2,20 @@
 'use client';
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import { Send, User, Bot, Loader2 } from 'lucide-react';
+import { Send, User, Bot, Loader2, Lightbulb, BookOpen, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useResume } from '@/app/contexts/resume-context';
 import { aiCareerMentor } from '@/ai/flows/ai-career-mentor';
-import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface Message {
   text: string;
   sender: 'user' | 'bot';
+  isJson?: boolean;
 }
 
 export function ChatInterface() {
@@ -45,7 +47,7 @@ export function ChatInterface() {
         resumeText: resumeData?.rawText ?? "No resume provided.",
         userInput: input,
       });
-      const botMessage: Message = { text: response.response, sender: 'bot' };
+      const botMessage: Message = { text: JSON.stringify(response.response), sender: 'bot', isJson: true };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       const errorMessage: Message = { text: "Sorry, I'm having trouble connecting. Please try again later.", sender: 'bot' };
@@ -53,6 +55,54 @@ export function ChatInterface() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const renderBotMessage = (message: Message) => {
+    if (message.isJson) {
+      try {
+        const data = JSON.parse(message.text);
+        return (
+          <div className="space-y-4">
+            {data.advice && (
+              <p className="text-sm">{data.advice}</p>
+            )}
+            {data.skillGaps && data.skillGaps.length > 0 && (
+              <Card>
+                <CardHeader className="p-4">
+                  <CardTitle className="text-base flex items-center gap-2"><Lightbulb className="h-4 w-4"/> Skill Gaps Identified</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                  <div className="flex flex-wrap gap-2">
+                    {data.skillGaps.map((skill: string, index: number) => (
+                      <Badge key={index} variant="secondary">{skill}</Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            {data.learningRecommendations && data.learningRecommendations.length > 0 && (
+               <Card>
+                <CardHeader className="p-4">
+                  <CardTitle className="text-base flex items-center gap-2"><GraduationCap className="h-4 w-4"/> Learning Recommendations</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  {data.learningRecommendations.map((rec: { resource: string, reason: string }, index: number) => (
+                    <div key={index} className="text-sm">
+                      <p className="font-semibold flex items-center gap-2"><BookOpen className="h-4 w-4 text-primary" /> {rec.resource}</p>
+                      <p className="text-muted-foreground pl-6">{rec.reason}</p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+      } catch (e) {
+        // Fallback for non-json or malformed json
+        return <p className="text-sm">{message.text}</p>;
+      }
+    }
+    return <p className="text-sm">{message.text}</p>;
   };
 
   return (
@@ -67,7 +117,7 @@ export function ChatInterface() {
                 </Avatar>
               )}
               <div className={`rounded-lg px-4 py-3 max-w-lg ${message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
-                <p className="text-sm">{message.text}</p>
+                {renderBotMessage(message)}
               </div>
               {message.sender === 'user' && (
                 <Avatar className="h-8 w-8">
@@ -94,13 +144,18 @@ export function ChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask your mentor a question..."
-            disabled={isLoading}
+            disabled={isLoading || !resumeData}
             className="flex-1"
           />
-          <Button type="submit" disabled={isLoading || !input.trim()} size="icon">
+          <Button type="submit" disabled={isLoading || !input.trim() || !resumeData} size="icon">
             <Send className="h-5 w-5" />
           </Button>
         </form>
+         {!resumeData && (
+          <p className="text-xs text-center text-muted-foreground mt-2">
+            Please analyze your resume first to have a personalized chat with the mentor.
+          </p>
+        )}
       </div>
     </div>
   );

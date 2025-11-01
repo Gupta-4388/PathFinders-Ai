@@ -25,7 +25,14 @@ const AICareerMentorInputSchema = z.object({
 export type AICareerMentorInput = z.infer<typeof AICareerMentorInputSchema>;
 
 const AICareerMentorOutputSchema = z.object({
-  response: z.string().describe('The AI career mentor\'s response.'),
+  response: z.object({
+    advice: z.string().describe("General career advice or a direct answer to the user's question."),
+    skillGaps: z.array(z.string()).optional().describe("A list of skills the user might be missing for their career goals, based on their resume."),
+    learningRecommendations: z.array(z.object({
+        resource: z.string().describe("A specific course, book, or resource to learn a new skill."),
+        reason: z.string().describe("Why this resource is recommended for the user.")
+    })).optional().describe("A list of personalized learning recommendations.")
+  }).describe('The AI career mentor\'s response in JSON format.')
 });
 export type AICareerMentorOutput = z.infer<typeof AICareerMentorOutputSchema>;
 
@@ -38,14 +45,14 @@ const aiCareerMentorPrompt = ai.definePrompt({
   input: {schema: AICareerMentorInputSchema},
   output: {schema: AICareerMentorOutputSchema},
   prompt: `You are an AI career mentor. You are helping the user with career advice, skill gap analysis, and learning recommendations.
+Your response MUST be in JSON format.
 
 You have access to the user's resume text, use it to provide personalized and accurate response.
 
 Resume Text: {{{resumeText}}}
 
 User Input: {{{userInput}}}
-
-Response: `,
+`,
 });
 
 const aiCareerMentorFlow = ai.defineFlow(
