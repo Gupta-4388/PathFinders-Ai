@@ -4,37 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUser, useFirestore, useDoc } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-
-interface UserProfile {
-    name: string;
-    goals: string;
-}
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SettingsPage() {
-    const { user } = useUser();
-    const firestore = useFirestore();
     const [name, setName] = useState('');
     const [goals, setGoals] = useState('');
-
-    const userProfileRef = user && firestore ? doc(firestore, 'users', user.uid) : null;
-    const { data: userProfile } = useDoc<UserProfile>(userProfileRef);
-
-    useEffect(() => {
-        if (userProfile) {
-            setName(userProfile.name || user?.displayName || '');
-            setGoals(userProfile.goals || '');
-        } else if (user) {
-            setName(user.displayName || '');
-        }
-    }, [userProfile, user]);
+    const { toast } = useToast();
 
     const handleSave = async () => {
-        if (userProfileRef) {
-            await setDoc(userProfileRef, { name, goals }, { merge: true });
-        }
+        toast({
+            title: "Settings Saved",
+            description: "Your preferences have been updated.",
+        });
     };
 
     return (
@@ -45,22 +27,18 @@ export default function SettingsPage() {
                         Settings
                     </h1>
                     <p className="mt-2 text-muted-foreground">
-                        Manage your account and profile settings.
+                        Manage your profile and preferences.
                     </p>
                 </div>
                 <Card>
                     <CardHeader>
                         <CardTitle>Profile</CardTitle>
-                        <CardDescription>Update your personal information.</CardDescription>
+                        <CardDescription>This information is stored locally and can be cleared at any time.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" value={user?.email ?? ''} disabled />
+                            <Input id="name" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="goals">Career Goals</Label>

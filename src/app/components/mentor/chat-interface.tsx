@@ -84,7 +84,6 @@ export function ChatInterface() {
               </div>
               {message.sender === 'user' && (
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://picsum.photos/seed/user-avatar/100/100" />
                   <AvatarFallback><User /></AvatarFallback>
                 </Avatar>
               )}
