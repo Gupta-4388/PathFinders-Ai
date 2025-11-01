@@ -1,3 +1,4 @@
+
 'use client';
 import { AppLayout } from '../components/layout/app-layout';
 import { CareerPaths } from '../components/dashboard/career-paths';
@@ -12,7 +13,7 @@ function DashboardPageContent() {
         <h2 className="font-orbitron text-4xl md:text-5xl font-bold text-foreground leading-tight">
           Transform your AI into a trusted companion.
         </h2>
-        <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+        <p className="mt-4 font-headline text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           Build loyalty with contextual intelligence that lasts beyond a single session.
         </p>
       </div>
