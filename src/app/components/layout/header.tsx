@@ -6,6 +6,7 @@ import { Logo } from '../shared/logo';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 function capitalize(str: string) {
   if (!str) return '';
@@ -22,6 +23,7 @@ export function AppHeader() {
   return (
     <header className="sticky top-0 z-10 flex h-20 items-center justify-between gap-4 border-b border-border/60 bg-background/80 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
       <div className="flex items-center gap-4">
+        <SidebarTrigger className="md:hidden"/>
         {!isDashboard ? (
           <>
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
