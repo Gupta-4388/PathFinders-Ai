@@ -5,7 +5,6 @@ import { useResume } from '../contexts/resume-context';
 import { ResumeParser } from '../components/dashboard/resume-parser';
 import { JobTrendsSummary } from '../components/dashboard/job-trends-summary';
 import { WelcomeHeader } from '../components/dashboard/welcome-header';
-import { ResumeProvider } from '../contexts/resume-context';
 
 function DashboardPageContent() {
   const { resumeData } = useResume();
@@ -40,9 +39,7 @@ function DashboardPageContent() {
 export default function DashboardPage() {
   return (
     <AppLayout>
-      <ResumeProvider>
-        <DashboardPageContent />
-      </ResumeProvider>
+      <DashboardPageContent />
     </AppLayout>
   );
 }
