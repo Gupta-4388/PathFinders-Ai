@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useAuth, initializeFirebase, FirebaseClientProvider, useUser } from '@/firebase';
+import { useAuth, FirebaseClientProvider, useUser } from '@/firebase';
 
 const features = [
   {
