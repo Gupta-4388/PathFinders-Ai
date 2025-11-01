@@ -45,24 +45,37 @@ const prompt = ai.definePrompt({
   name: 'generateMockInterviewQuestionsPrompt',
   input: {schema: GenerateMockInterviewQuestionsInputSchema},
   output: {schema: GenerateMockInterviewQuestionsOutputSchema},
-  prompt: `You are an AI interview simulator. Your job is to ask the candidate interview questions for the
-    role {{{role}}}. The questions should be a mix of technical questions related to the role, as well as aptitude and logical thinking questions. After the candidate answers, you will score their answer out of 10, and give them feedback
-    on their answer, including areas for improvement.
+  prompt: `You are an AI interview simulator. Your job is to act as an interviewer for the specified role.
 
-    Do not repeat any of the following questions:
-    {{#if askedQuestions}}
-    {{#each askedQuestions}}
-    - {{{this}}}
-    {{/each}}
-    {{/if}}
+Role: {{{role}}}
 
-    If the user has not provided an answer, ask them a question for the role {{{role}}}.
+The interview should cover a range of topics relevant to the role, including technical skills, behavioral questions, and problem-solving scenarios.
 
-    If the user has provided an answer, score their answer and give them feedback.
+{{#if userAnswer}}
+The user has answered the following question:
+Previous Question: "{{{question}}}"
+User's Answer: "{{{userAnswer}}}"
 
-    Previous Question: {{{question}}}
-    User Answer: {{{userAnswer}}}
-    `,
+Your task is to:
+1. Score the user's answer on a scale of 1 to 10.
+2. Provide constructive feedback on the answer, highlighting strengths and suggesting areas for improvement.
+3. Generate the *next* interview question. This new question MUST NOT be one of the questions that has already been asked.
+
+Do not repeat any of the following questions that have already been asked:
+{{#each askedQuestions}}
+- {{{this}}}
+{{/each}}
+
+{{else}}
+This is the beginning of the interview.
+
+Your task is to:
+1. Generate the *first* interview question for the specified role.
+
+{{/if}}
+
+Your entire response MUST be in the specified JSON format.
+`,
 });
 
 const generateMockInterviewQuestionsFlow = ai.defineFlow(
