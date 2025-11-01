@@ -4,7 +4,6 @@
 import { SidebarProvider, Sidebar, SidebarInset, SidebarContent, SidebarFooter } from '@/components/ui/sidebar';
 import { AppHeader } from './header';
 import { SidebarNav } from './sidebar-nav';
-import { ResumeProvider } from '@/app/contexts/resume-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
@@ -16,9 +15,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const firebaseApp = initializeFirebase();
   return (
     <FirebaseClientProvider firebaseApp={firebaseApp}>
-      <ResumeProvider>
-        <AppLayoutContent>{children}</AppLayoutContent>
-      </ResumeProvider>
+      <AppLayoutContent>{children}</AppLayoutContent>
     </FirebaseClientProvider>
   );
 }
