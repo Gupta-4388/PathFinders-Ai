@@ -2,7 +2,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   BrainCircuit,
@@ -15,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
-import { FirebaseClientProvider, useUser } from '@/firebase';
 
 const features = [
   {
@@ -51,14 +49,6 @@ const features = [
 ];
 
 function LandingPageContent() {
-  const { user } = useUser();
-  const router = useRouter();
-
-  if (user) {
-    router.push('/dashboard');
-    return null;
-  }
-  
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -66,7 +56,7 @@ function LandingPageContent() {
             <Logo />
         </Link>
         <Button asChild>
-            <Link href="/login">Sign In</Link>
+            <Link href="/dashboard">Get Started</Link>
         </Button>
       </header>
 
@@ -81,7 +71,7 @@ function LandingPageContent() {
             </p>
             <div className="mt-8 flex justify-center gap-4">
                <Button asChild size="lg">
-                <Link href="/login">
+                <Link href="/dashboard">
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
@@ -146,8 +136,6 @@ function LandingPageContent() {
 
 export default function LandingPage() {
   return (
-    <FirebaseClientProvider>
       <LandingPageContent />
-    </FirebaseClientProvider>
   )
 }
