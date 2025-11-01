@@ -3,21 +3,12 @@
 import { AppLayout } from '../components/layout/app-layout';
 import { CareerPaths } from '../components/dashboard/career-paths';
 import { WelcomeHeader } from '../components/dashboard/welcome-header';
-import { ResumeParser } from '../components/dashboard/resume-parser';
-import { JobTrendsSummary } from '../components/dashboard/job-trends-summary';
 
 function DashboardPageContent() {
   return (
     <div className="space-y-8">
       <WelcomeHeader />
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <ResumeParser />
-          </div>
-          <JobTrendsSummary />
-        </div>
-      
       <div>
         <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight">
           Top Career Paths For You
