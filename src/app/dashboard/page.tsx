@@ -10,10 +10,10 @@ function DashboardPageContent() {
 
       <div className="text-center py-8">
         <h2 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-          Personalise your AI app with long-term memory API
+          Transform your AI into a trusted companion.
         </h2>
         <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Delight your users with blazing fast and scalable memory for your AI application. Interoperable between models and modalities.
+          Build loyalty with contextual intelligence that lasts beyond a single session.
         </p>
       </div>
       
