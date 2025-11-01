@@ -12,22 +12,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <ResumeProvider>
       <SidebarProvider>
         <div className="min-h-screen">
-          <Sidebar>
+          <Sidebar collapsible="icon" className="border-r border-border/60">
             <SidebarNav />
-            <SidebarContent>
-              {/* Can be used for extra content */}
-            </SidebarContent>
             <SidebarFooter>
               <div className="flex items-center gap-3 p-2">
-                 <Avatar className="h-9 w-9">
+                 <Avatar className="h-8 w-8">
                   <AvatarImage src="https://picsum.photos/seed/user-avatar/100/100" alt="User" />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 overflow-hidden group-data-[collapsible=icon]:hidden">
-                  <p className="text-sm font-medium truncate">Guest User</p>
-                  <p className="text-xs text-sidebar-foreground/70 truncate">guest@pathfinder.ai</p>
+                  <p className="text-sm font-medium truncate">Profile</p>
                 </div>
-                <Button asChild variant="ghost" size="icon" className="h-8 w-8 group-data-[collapsible=icon]:hidden">
+                 <Button asChild variant="ghost" size="icon" className="h-7 w-7 group-data-[collapsible=icon]:hidden">
                   <Link href="/"><LogOut /></Link>
                 </Button>
               </div>
@@ -35,7 +31,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </Sidebar>
           <SidebarInset>
             <AppHeader />
-            <main className="p-4 sm:p-6 lg:p-8 bg-background flex-1">
+            <main className="p-4 sm:p-6 lg:p-8 bg-transparent flex-1">
               {children}
             </main>
           </SidebarInset>

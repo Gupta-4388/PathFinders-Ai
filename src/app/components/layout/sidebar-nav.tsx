@@ -8,12 +8,13 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, MessageCircle, Bot, LineChart } from 'lucide-react';
+import { LayoutDashboard, MessageCircle, Bot, LineChart, FileText } from 'lucide-react';
 import { Logo } from '../shared/logo';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', icon: <LayoutDashboard />, label: 'Dashboard', tooltip: 'Dashboard' },
+  { href: '/resume-analyzer', icon: <FileText />, label: 'Resume Analyzer', tooltip: 'Resume Analyzer' },
   { href: '/mentor', icon: <MessageCircle />, label: 'AI Mentor', tooltip: 'AI Mentor' },
   { href: '/interview', icon: <Bot />, label: 'Mock Interview', tooltip: 'Mock Interview' },
   { href: '/trends', icon: <LineChart />, label: 'Job Trends', tooltip: 'Job Trends' },
@@ -28,46 +29,26 @@ export function SidebarNav() {
         <Logo className="group-data-[collapsible=icon]:hidden" />
         <div className="hidden group-data-[collapsible=icon]:block">
            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 32 32"
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="text-primary"
             >
-              <path
-                d="M16 30C23.732 30 30 23.732 30 16C30 8.26801 23.732 2 16 2C8.26801 2 2 8.26801 2 16C2 23.732 8.26801 30 16 30Z"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M21.75 16H10.25"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M16 21.75L10.25 16L16 10.25"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <path d="M14 25.6667C20.4434 25.6667 25.6667 20.4434 25.6667 14C25.6667 7.55666 20.4434 2.33334 14 2.33334C7.55666 2.33334 2.33334 7.55666 2.33334 14C2.33334 20.4434 7.55666 25.6667 14 25.6667Z" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
         </div>
       </SidebarHeader>
-      <SidebarMenu>
+      <SidebarMenu className="p-2">
         {navItems.map((item) => (
           <SidebarMenuItem key={item.href}>
             <Link href={item.href}>
               <SidebarMenuButton
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href)}
                 tooltip={{ children: item.tooltip, side: 'right' }}
                 className={cn(
-                    pathname === item.href ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
+                    pathname.startsWith(item.href) ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/80 hover:text-sidebar-foreground'
                 )}
               >
                 {item.icon}
