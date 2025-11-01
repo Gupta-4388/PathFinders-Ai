@@ -47,9 +47,12 @@ const aiCareerMentorPrompt = ai.definePrompt({
   prompt: `You are an AI career mentor. You are helping the user with career advice, skill gap analysis, and learning recommendations.
 Your response MUST be in JSON format.
 
+{{#if resumeText}}
 You have access to the user's resume text, use it to provide personalized and accurate response.
-
 Resume Text: {{{resumeText}}}
+{{else}}
+The user has not provided a resume. You can still provide general career advice.
+{{/if}}
 
 User Input: {{{userInput}}}
 `,

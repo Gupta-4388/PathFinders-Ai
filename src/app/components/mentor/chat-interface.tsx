@@ -44,7 +44,7 @@ export function ChatInterface() {
 
     try {
       const response = await aiCareerMentor({
-        resumeText: resumeData?.rawText ?? "No resume provided.",
+        resumeText: resumeData?.rawText ?? "",
         userInput: input,
       });
       const botMessage: Message = { text: JSON.stringify(response.response), sender: 'bot', isJson: true };
@@ -144,16 +144,16 @@ export function ChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask your mentor a question..."
-            disabled={isLoading || !resumeData}
+            disabled={isLoading}
             className="flex-1"
           />
-          <Button type="submit" disabled={isLoading || !input.trim() || !resumeData} size="icon">
+          <Button type="submit" disabled={isLoading || !input.trim()} size="icon">
             <Send className="h-5 w-5" />
           </Button>
         </form>
          {!resumeData && (
           <p className="text-xs text-center text-muted-foreground mt-2">
-            Please analyze your resume first to have a personalized chat with the mentor.
+            Analyze your resume for a more personalized chat with the mentor.
           </p>
         )}
       </div>
