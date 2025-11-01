@@ -46,7 +46,7 @@ const prompt = ai.definePrompt({
   input: {schema: GenerateMockInterviewQuestionsInputSchema},
   output: {schema: GenerateMockInterviewQuestionsOutputSchema},
   prompt: `You are an AI interview simulator. Your job is to ask the candidate interview questions for the
-    role {{{role}}}. After the candidate answers, you will score their answer out of 10, and give them feedback
+    role {{{role}}}. The questions should be a mix of technical questions related to the role, as well as aptitude and logical thinking questions. After the candidate answers, you will score their answer out of 10, and give them feedback
     on their answer, including areas for improvement.
 
     Do not repeat any of the following questions:
