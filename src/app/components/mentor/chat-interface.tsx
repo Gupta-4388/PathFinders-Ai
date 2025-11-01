@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
@@ -53,20 +54,6 @@ export function ChatInterface() {
       setIsLoading(false);
     }
   };
-
-  if (!resumeData) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-4">
-        <h3 className="text-xl font-semibold">Please upload your resume first</h3>
-        <p className="text-muted-foreground mt-2">
-          Your AI mentor needs your resume to provide personalized advice.
-        </p>
-        <Button asChild className="mt-4">
-          <Link href="/dashboard">Go to Dashboard</Link>
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col h-full">
