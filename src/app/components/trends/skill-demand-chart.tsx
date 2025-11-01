@@ -33,7 +33,7 @@ export function SkillDemandChart() {
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <ResponsiveContainer>
-            <BarChart layout="vertical" data={chartData} margin={{ left: 10 }}>
+            <BarChart layout="vertical" data={chartData} margin={{ left: 20 }}>
               <CartesianGrid horizontal={false} />
               <YAxis
                 dataKey="skill"
