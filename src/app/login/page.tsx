@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
 } from 'firebase/auth';
 import { useAuth, FirebaseClientProvider, useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -74,31 +72,6 @@ function LoginPageContent() {
       setIsLoading(false);
     }
   };
-  
-  const handleGoogleSignIn = async () => {
-    if (!auth) {
-        toast({
-            variant: 'destructive',
-            title: 'Authentication service not available.',
-            description: 'Please try again later.',
-        });
-        return;
-    }
-    setIsLoading(true);
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Google Sign-In Error',
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
@@ -145,28 +118,14 @@ function LoginPageContent() {
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isSignUp ? 'Sign Up' : 'Sign In'}
             </Button>
-          </CardFooter>
-        </form>
-         <div className="relative px-6 pb-6">
-            <div className="absolute inset-x-6 top-0 flex items-center">
-                <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-            </div>
-        </div>
-        <div className="px-6 pb-6">
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading}>
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8 0 122.4 109.8 13.6 244 13.6c70.3 0 129.8 27.5 174.9 71.3l-59.8 59.7c-26.4-25.1-61.3-41.5-115.1-41.5-87.2 0-159.2 71.3-159.2 159.2s72 159.2 159.2 159.2c97.7 0 134.4-65.1 140.8-99.3H244v-73.1h236.9c2.4 12.6 3.1 26.7 3.1 41.9z"></path></svg>}
-                Google
-            </Button>
-        </div>
-        <div className="px-6 pb-6 text-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}
               <Button variant="link" onClick={() => setIsSignUp(!isSignUp)} type="button">
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </Button>
-        </div>
+            </div>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
