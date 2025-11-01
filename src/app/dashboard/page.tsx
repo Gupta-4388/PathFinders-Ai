@@ -9,6 +9,15 @@ function DashboardPageContent() {
     <div className="space-y-8">
       <WelcomeHeader />
 
+      <div className="text-center">
+        <p className="text-lg text-muted-foreground">
+            Transform your AI into a trusted companion.
+        </p>
+        <p className="text-lg text-muted-foreground">
+            Build loyalty with contextual intelligence that lasts beyond a single session.
+        </p>
+      </div>
+
       <div>
         <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight">
           Top Career Paths For You
