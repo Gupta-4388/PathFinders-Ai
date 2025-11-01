@@ -563,10 +563,16 @@ const SidebarMenuButton = React.forwardRef<
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+        className={cn(
+          sidebarMenuButtonVariants({ variant, size }),
+          "relative",
+          isActive &&
+            "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-4/5 before:w-1 before:rounded-tr-md before:rounded-br-md before:bg-primary before:bg-gradient-to-b before:from-primary before:to-primary/50",
+          className
+        )}
         {...props}
       />
-    )
+    );
 
     if (!tooltip) {
       return button
