@@ -87,8 +87,8 @@ export function ResumeParser() {
       <CardContent>
         {isParsing ? (
           <div className="flex flex-col items-center justify-center space-y-4 text-center h-64">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            <p className="font-semibold text-lg">Analyzing your resume...</p>
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+            <p className="font-semibold text-xl">Analyzing your resume...</p>
             <p className="text-muted-foreground">{fileName}</p>
           </div>
         ) : resumeData ? (

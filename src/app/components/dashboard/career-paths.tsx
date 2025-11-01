@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useResume } from '@/app/contexts/resume-context';
-import { useEffect, useState } from 'react';
 import { CheckCircle, Circle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -58,15 +57,8 @@ const careerPathsData = [
 
 export function CareerPaths() {
   const { resumeData, isParsing } = useResume();
-  const [shouldRender, setShouldRender] = useState(false);
 
-  useEffect(() => {
-    // For demo purposes, always render. If resumeData exists, the component will update.
-    const timer = setTimeout(() => setShouldRender(true), 300);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!shouldRender || isParsing) {
+  if (isParsing) {
     return (
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[...Array(3)].map((_, i) => (
@@ -77,7 +69,7 @@ export function CareerPaths() {
   }
 
   return (
-    <div className={`transition-opacity duration-500 ${shouldRender ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`transition-opacity duration-500 opacity-100`}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
         {careerPathsData.map((path) => {
           const userSkills = resumeData?.skills.map(s => s.toLowerCase()) || [];
