@@ -1,7 +1,8 @@
+
 'use client';
 
 import { TrendingUp, ArrowRight } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, Line, YAxis } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import { Button } from '@/components/ui/button';
@@ -44,12 +45,26 @@ export function JobTrendsSummary() {
       <CardContent className="flex-1">
         <ChartContainer config={chartConfig} className="h-[180px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart accessibilityLayer data={dynamicChartData} layout="vertical" margin={{ left: 10 }}>
+            <LineChart accessibilityLayer data={dynamicChartData} layout="vertical" margin={{ left: 10, right: 40 }}>
               <CartesianGrid horizontal={false} />
-              <XAxis type="number" hide />
+              <XAxis type="number" hide domain={[70, 100]} />
+              <YAxis 
+                dataKey="skill" 
+                type="category" 
+                axisLine={false} 
+                tickLine={false} 
+                width={60} 
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              />
               <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
-              <Bar dataKey="demand" fill="var(--color-demand)" radius={5} />
-            </BarChart>
+              <Line 
+                dataKey="demand" 
+                type="monotone" 
+                stroke="var(--color-demand)"
+                strokeWidth={2}
+                dot={{r: 5, fill: 'var(--color-demand)', strokeWidth: 0}} 
+              />
+            </LineChart>
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
