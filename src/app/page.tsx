@@ -15,8 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useAuth, initializeFirebase } from '@/firebase';
-import { FirebaseClientProvider } from '@/firebase';
+import { useAuth, initializeFirebase, FirebaseClientProvider } from '@/firebase';
 
 const features = [
   {
@@ -57,9 +56,10 @@ function LandingPageContent() {
     if (auth) {
       const provider = new GoogleAuthProvider();
       try {
-        await signInWithPopup(auth, provider);
-        // Redirect to dashboard after successful sign-in
-        window.location.href = '/dashboard';
+        const result = await signInWithPopup(auth, provider);
+        if (result.user) {
+          window.location.href = '/dashboard';
+        }
       } catch (error) {
         console.error("Authentication error:", error);
       }
