@@ -8,7 +8,9 @@ import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useResume } from '@/app/contexts/resume-context';
+import { useProfile } from '@/app/contexts/profile-context';
 import { useMemo } from 'react';
+import { allCareerPaths } from './career-paths';
 
 const defaultChartData = [
   { skill: 'React', demand: 95 },
@@ -27,16 +29,47 @@ const chartConfig = {
 
 export function JobTrendsSummary() {
   const { resumeData } = useResume();
+  const { goals } = useProfile();
 
-  const chartData = useMemo(() => {
+  const { chartData, description } = useMemo(() => {
+    // Priority 1: Resume data
     if (resumeData && resumeData.skills.length > 0) {
-      return resumeData.skills.slice(0, 5).map((skill) => ({
-        skill,
-        demand: 80 + Math.floor(Math.random() * 20), // Simulate real-time demand score
-      }));
+      return {
+        chartData: resumeData.skills.slice(0, 5).map((skill) => ({
+            skill,
+            demand: 80 + Math.floor(Math.random() * 20),
+        })),
+        description: "Demand for skills from your resume."
+      };
     }
-    return defaultChartData;
-  }, [resumeData]);
+    
+    // Priority 2: Career goals
+    if (goals) {
+      const goalWords = goals.toLowerCase().split(/\s+/).filter(Boolean);
+      if (goalWords.length > 0) {
+        const matchedPath = allCareerPaths.find(path => {
+          const pathText = path.title.toLowerCase();
+          return goalWords.some(word => pathText.includes(word));
+        });
+
+        if (matchedPath) {
+          return {
+            chartData: matchedPath.requiredSkills.map(skill => ({
+              skill,
+              demand: 80 + Math.floor(Math.random() * 20),
+            })),
+            description: `Trending skills for a ${matchedPath.title}.`
+          };
+        }
+      }
+    }
+
+    // Default data
+    return {
+        chartData: defaultChartData,
+        description: "A quick look at top trending skills."
+    };
+  }, [resumeData, goals]);
 
   return (
     <Card className="h-full bg-card/60 backdrop-blur-sm border-white/20 shadow-lg flex flex-col">
@@ -46,7 +79,7 @@ export function JobTrendsSummary() {
           Skill Demand
         </CardTitle>
         <CardDescription>
-            {resumeData ? "Demand for skills from your resume." : "A quick look at top trending skills."}
+            {description}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">

@@ -10,7 +10,7 @@ import { CheckCircle, Circle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMemo } from 'react';
 
-const allCareerPaths = [
+export const allCareerPaths = [
   {
     id: '1',
     title: 'AI/ML Engineer',

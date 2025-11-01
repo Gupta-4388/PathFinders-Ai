@@ -3,20 +3,20 @@
 import { AppLayout } from '../components/layout/app-layout';
 import { CareerPaths } from '../components/dashboard/career-paths';
 import { WelcomeHeader } from '../components/dashboard/welcome-header';
+import { ResumeParser } from '../components/dashboard/resume-parser';
+import { JobTrendsSummary } from '../components/dashboard/job-trends-summary';
 
 function DashboardPageContent() {
   return (
     <div className="space-y-8">
       <WelcomeHeader />
 
-      <div className="text-center py-8">
-        <h2 className="font-orbitron text-4xl md:text-5xl font-bold text-foreground leading-tight">
-          Transform your AI into a trusted companion.
-        </h2>
-        <p className="mt-4 font-headline text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Build loyalty with contextual intelligence that lasts beyond a single session.
-        </p>
-      </div>
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <ResumeParser />
+          </div>
+          <JobTrendsSummary />
+        </div>
       
       <div>
         <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight">
