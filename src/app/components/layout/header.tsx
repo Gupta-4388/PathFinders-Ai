@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Logo } from '../shared/logo';
 
 function capitalize(str: string) {
   if (!str) return '';
@@ -15,9 +15,9 @@ export function AppHeader() {
   const pageTitle = pathParts.length > 0 ? capitalize(pathParts[pathParts.length -1].replace('-', ' ')) : 'Dashboard';
 
   return (
-    <header className="sticky top-0 z-10 flex h-20 items-center justify-between gap-4 border-b border-border/60 bg-transparent px-4 backdrop-blur-sm sm:px-6 lg:px-8">
-      <div className="flex items-center gap-2">
-        <SidebarTrigger className="md:hidden" />
+    <header className="sticky top-0 z-10 flex h-20 items-center justify-between gap-4 border-b border-border/60 bg-background/80 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
+      <div className="flex items-center gap-4">
+        <Logo />
         <h1 className="font-headline text-2xl font-bold tracking-tight">{pageTitle}</h1>
       </div>
 
