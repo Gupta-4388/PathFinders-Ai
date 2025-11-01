@@ -26,18 +26,22 @@ export function SidebarNav() {
   return (
     <>
       <SidebarHeader className="p-4">
-        <Logo className="group-data-[collapsible=icon]:hidden" />
+        <Link href="/dashboard" className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
+            <Logo />
+        </Link>
         <div className="hidden group-data-[collapsible=icon]:block">
-           <svg
-              width="28"
-              height="28"
-              viewBox="0 0 28 28"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-primary"
-            >
-              <path d="M14 25.6667C20.4434 25.6667 25.6667 20.4434 25.6667 14C25.6667 7.55666 20.4434 2.33334 14 2.33334C7.55666 2.33334 2.33334 7.55666 2.33334 14C2.33334 20.4434 7.55666 25.6667 14 25.6667Z" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+           <Link href="/dashboard">
+             <svg
+                width="28"
+                height="28"
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-primary"
+              >
+                <path d="M14 25.6667C20.4434 25.6667 25.6667 20.4434 25.6667 14C25.6667 7.55666 20.4434 2.33334 14 2.33334C7.55666 2.33334 2.33334 7.55666 2.33334 14C2.33334 20.4434 7.55666 25.6667 14 25.6667Z" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+           </Link>
         </div>
       </SidebarHeader>
       <SidebarMenu className="p-2">
@@ -45,10 +49,10 @@ export function SidebarNav() {
           <SidebarMenuItem key={item.href}>
             <Link href={item.href}>
               <SidebarMenuButton
-                isActive={pathname.startsWith(item.href)}
+                isActive={pathname === item.href}
                 tooltip={{ children: item.tooltip, side: 'right' }}
                 className={cn(
-                    pathname.startsWith(item.href) ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/80 hover:text-sidebar-foreground'
+                    pathname === item.href ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/80 hover:text-sidebar-foreground'
                 )}
               >
                 {item.icon}

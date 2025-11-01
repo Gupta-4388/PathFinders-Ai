@@ -5,7 +5,10 @@ import {
   Bell,
   ChevronRight,
   Home,
+  LogOut,
   Search,
+  User,
+  Settings,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +31,7 @@ function capitalize(str: string) {
 export function AppHeader() {
   const pathname = usePathname();
   const pathParts = pathname.split('/').filter(Boolean);
-  const pageTitle = pathParts.length > 0 ? capitalize(pathParts[pathParts.length -1]) + ' Dashboard' : 'Career Path Dashboard'
+  const pageTitle = pathParts.length > 0 ? capitalize(pathParts[pathParts.length -1].replace('-', ' ')) : 'Dashboard';
 
   return (
     <header className="sticky top-0 z-10 flex h-20 items-center justify-between gap-4 border-b border-border/60 bg-transparent px-4 backdrop-blur-sm sm:px-6 lg:px-8">
@@ -50,11 +53,15 @@ export function AppHeader() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+                <Link href="#"><User className="mr-2 h-4 w-4" />Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+                <Link href="#"><Settings className="mr-2 h-4 w-4" />Settings</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href="/">Logout</Link>
+            <DropdownMenuItem asChild>
+              <Link href="/"><LogOut className="mr-2 h-4 w-4" />Logout</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

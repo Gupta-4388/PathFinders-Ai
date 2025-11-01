@@ -49,8 +49,10 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        <Logo />
-        <Button asChild variant="ghost">
+        <Link href="/">
+            <Logo />
+        </Link>
+        <Button asChild>
           <Link href="/dashboard">Sign In</Link>
         </Button>
       </header>
