@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   BrainCircuit,
@@ -15,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useAuth, initializeFirebase, FirebaseClientProvider } from '@/firebase';
+import { useAuth, initializeFirebase, FirebaseClientProvider, useUser } from '@/firebase';
 
 const features = [
   {
@@ -52,14 +53,18 @@ const features = [
 
 function LandingPageContent() {
   const auth = useAuth();
+  const { user } = useUser();
+  const router = useRouter();
+
+  if (user) {
+    router.push('/dashboard');
+  }
+  
   const handleSignIn = async () => {
     if (auth) {
       const provider = new GoogleAuthProvider();
       try {
-        const result = await signInWithPopup(auth, provider);
-        if (result.user) {
-          window.location.href = '/dashboard';
-        }
+        await signInWithPopup(auth, provider);
       } catch (error) {
         console.error("Authentication error:", error);
       }

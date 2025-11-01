@@ -16,9 +16,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const firebaseApp = initializeFirebase();
   return (
     <FirebaseClientProvider firebaseApp={firebaseApp}>
-      <ResumeProvider>
-        <AppLayoutContent>{children}</AppLayoutContent>
-      </ResumeProvider>
+        <ResumeProvider>
+            <AppLayoutContent>{children}</AppLayoutContent>
+        </ResumeProvider>
     </FirebaseClientProvider>
   );
 }
