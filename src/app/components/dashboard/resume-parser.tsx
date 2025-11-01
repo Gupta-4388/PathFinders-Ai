@@ -37,19 +37,11 @@ export function ResumeParser() {
       reader.onload = async () => {
         const base64File = reader.result as string;
 
-        const fileReaderForText = new FileReader();
-        fileReaderForText.readAsText(file);
-        
-        let rawText = '';
-        if (file.type === 'application/pdf') {
-          // NOTE: This is a simplified text extraction for demonstration.
-          // A robust solution would use a library like pdf.js.
-          rawText = `(PDF content for ${file.name} - text extraction requires a library)`;
-        } else {
-          rawText = await new Promise((resolve) => {
-            fileReaderForText.onload = () => resolve(fileReaderForText.result as string);
-          });
-        }
+        // For simplicity, we are not extracting raw text from PDF on client.
+        // The GenAI model will handle the text extraction from the data URI.
+        const rawText = file.type === 'application/pdf' 
+          ? `Content of ${file.name}` 
+          : await file.text();
         
         const result = await parseResumeForSkills({ resumeDataUri: base64File });
         setResumeData({ ...result, rawText });
@@ -60,6 +52,9 @@ export function ResumeParser() {
           className: "bg-green-100 dark:bg-green-900 border-green-400 dark:border-green-600",
         });
       };
+      reader.onerror = () => {
+        throw new Error("Failed to read the file.");
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -78,6 +73,7 @@ export function ResumeParser() {
     accept: {
       'application/pdf': ['.pdf'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'text/plain': ['.txt'],
     },
     maxFiles: 1,
   });
@@ -86,7 +82,7 @@ export function ResumeParser() {
     <Card className="h-full bg-card/60 backdrop-blur-sm border-white/20 shadow-lg">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Analyze Your Resume</CardTitle>
-        <CardDescription>Upload your resume (PDF or DOCX) to get started.</CardDescription>
+        <CardDescription>Upload your resume (PDF, DOCX, or TXT) to get started.</CardDescription>
       </CardHeader>
       <CardContent>
         {isParsing ? (
@@ -114,7 +110,7 @@ export function ResumeParser() {
                 {resumeData.experienceSummary}
               </p>
             </div>
-            <Button onClick={() => setResumeData(null)} variant="outline">
+            <Button onClick={() => { setResumeData(null); setFileName(null); }} variant="outline">
               Upload a different resume
             </Button>
           </div>
@@ -128,7 +124,7 @@ export function ResumeParser() {
             <p className="mt-4 text-center text-muted-foreground">
               {isDragActive ? 'Drop your resume here' : 'Drag & drop your resume here, or click to select'}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">PDF or DOCX (max 5MB)</p>
+            <p className="text-xs text-muted-foreground mt-1">PDF, DOCX, or TXT (max 5MB)</p>
           </div>
         )}
       </CardContent>
