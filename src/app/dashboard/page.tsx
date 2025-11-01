@@ -9,7 +9,7 @@ function DashboardPageContent() {
       <WelcomeHeader />
 
       <div className="text-center py-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+        <h2 className="font-orbitron text-4xl md:text-5xl font-bold text-foreground leading-tight">
           Transform your AI into a trusted companion.
         </h2>
         <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
