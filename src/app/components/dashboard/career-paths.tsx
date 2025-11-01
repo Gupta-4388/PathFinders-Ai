@@ -66,13 +66,20 @@ export function CareerPaths() {
     if (!goals) {
       return allCareerPaths;
     }
-    const lowercasedGoals = goals.toLowerCase();
-    const filtered = allCareerPaths.filter(path => 
-        path.title.toLowerCase().includes(lowercasedGoals) ||
-        path.description.toLowerCase().includes(lowercasedGoals)
-    );
+    const goalWords = goals.toLowerCase().split(/\s+/).filter(Boolean); // Split goals into words
+    if (goalWords.length === 0) {
+      return allCareerPaths;
+    }
+
+    const filtered = allCareerPaths.filter(path => {
+      const pathText = `${path.title.toLowerCase()} ${path.description.toLowerCase()}`;
+      // Match if any of the goal words are included in the path text
+      return goalWords.some(word => pathText.includes(word));
+    });
+
     return filtered.length > 0 ? filtered : allCareerPaths;
   }, [goals]);
+
 
   if (isParsing) {
     return (
