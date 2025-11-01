@@ -33,28 +33,36 @@ export function SidebarNav() {
         <div className="hidden group-data-[collapsible=icon]:block">
            <Link href="/dashboard">
              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
+                width="32"
+                height="32"
+                viewBox="0 0 100 100"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-primary"
               >
-                <path
-                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M16.24 7.76001L7.76001 16.24"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <g>
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#f97316" strokeWidth="5" />
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#2563eb" strokeWidth="5" />
+                  <path 
+                    d="M 50,95 
+                       C 50,95 20,75 30,50 
+                       S 45,20 50,10 
+                       s 20,40 20,40 
+                       c 0,0 -10,25 -20,45 z" 
+                    fill="#333" 
+                    transform="scale(1, 0.9) translate(0, 5)"
+                  />
+                  <path 
+                    d="M 50,85 
+                       C 50,85 40,70 45,50 
+                       S 48,30 50,20 
+                       s 5,20 5,30 
+                       c 0,0 -5,15 -5,35 z" 
+                    fill="none" 
+                    stroke="white" 
+                    strokeWidth="1.5" 
+                    strokeDasharray="5, 3" 
+                    transform="scale(1, 0.9) translate(0, 5)"
+                  />
+                </g>
               </svg>
            </Link>
         </div>
