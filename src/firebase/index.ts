@@ -7,6 +7,9 @@ let firebaseApp: FirebaseApp;
 // Provides a single instance of the Firebase app that can be used throughout the app.
 export function initializeFirebase(): FirebaseApp {
   if (!getApps().length) {
+    if (!firebaseConfig.apiKey) {
+      throw new Error('Missing Firebase API Key');
+    }
     firebaseApp = initializeApp(firebaseConfig);
   } else {
     firebaseApp = getApp();
