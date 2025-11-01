@@ -153,9 +153,8 @@ function LandingPageContent() {
 
 
 export default function LandingPage() {
-  const firebaseApp = initializeFirebase();
   return (
-    <FirebaseClientProvider firebaseApp={firebaseApp}>
+    <FirebaseClientProvider>
       <LandingPageContent />
     </FirebaseClientProvider>
   )

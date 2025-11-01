@@ -1,13 +1,17 @@
 
-import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { firebaseConfig } from './config';
+
+let firebaseApp: FirebaseApp;
 
 // Provides a single instance of the Firebase app that can be used throughout the app.
 export function initializeFirebase(): FirebaseApp {
   if (!getApps().length) {
-    return initializeApp(firebaseConfig);
+    firebaseApp = initializeApp(firebaseConfig);
+  } else {
+    firebaseApp = getApp();
   }
-  return getApps()[0] as FirebaseApp;
+  return firebaseApp;
 }
 
 export {
