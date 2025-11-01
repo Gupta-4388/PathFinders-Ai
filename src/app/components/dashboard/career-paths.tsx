@@ -5,10 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useResume } from '@/app/contexts/resume-context';
+import { useProfile } from '@/app/contexts/profile-context';
 import { CheckCircle, Circle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useMemo } from 'react';
 
-const careerPathsData = [
+const allCareerPaths = [
   {
     id: '1',
     title: 'AI/ML Engineer',
@@ -58,6 +60,19 @@ const careerPathsData = [
 
 export function CareerPaths() {
   const { resumeData, isParsing } = useResume();
+  const { goals } = useProfile();
+
+  const careerPathsData = useMemo(() => {
+    if (!goals) {
+      return allCareerPaths;
+    }
+    const lowercasedGoals = goals.toLowerCase();
+    const filtered = allCareerPaths.filter(path => 
+        path.title.toLowerCase().includes(lowercasedGoals) ||
+        path.description.toLowerCase().includes(lowercasedGoals)
+    );
+    return filtered.length > 0 ? filtered : allCareerPaths;
+  }, [goals]);
 
   if (isParsing) {
     return (
