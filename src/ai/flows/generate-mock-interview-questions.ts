@@ -15,6 +15,7 @@ const GenerateMockInterviewQuestionsInputSchema = z.object({
   role: z.string().describe('The job role to generate interview questions for.'),
   userAnswer: z.string().optional().describe('The user\'s answer to the question.'),
   question: z.string().optional().describe('The current question in the interview.'),
+  askedQuestions: z.array(z.string()).optional().describe('A list of questions that have already been asked.'),
 });
 
 export type GenerateMockInterviewQuestionsInput = z.infer<
@@ -47,6 +48,13 @@ const prompt = ai.definePrompt({
   prompt: `You are an AI interview simulator. Your job is to ask the candidate interview questions for the
     role {{{role}}}. After the candidate answers, you will score their answer out of 10, and give them feedback
     on their answer, including areas for improvement.
+
+    Do not repeat any of the following questions:
+    {{#if askedQuestions}}
+    {{#each askedQuestions}}
+    - {{{this}}}
+    {{/each}}
+    {{/if}}
 
     If the user has not provided an answer, ask them a question for the role {{{role}}}.
 

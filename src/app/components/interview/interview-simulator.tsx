@@ -21,6 +21,7 @@ interface InterviewResult {
 export function InterviewSimulator() {
   const [role, setRole] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState('');
+  const [askedQuestions, setAskedQuestions] = useState<string[]>([]);
   const [userAnswer, setUserAnswer] = useState('');
   const [interviewState, setInterviewState] = useState<InterviewState>('idle');
   const [result, setResult] = useState<InterviewResult | null>(null);
@@ -35,8 +36,9 @@ export function InterviewSimulator() {
     }
     setIsLoading(true);
     try {
-      const { question } = await generateMockInterviewQuestions({ role });
+      const { question } = await generateMockInterviewQuestions({ role, askedQuestions: [] });
       setCurrentQuestion(question);
+      setAskedQuestions([question]);
       setInterviewState('started');
     } catch (error) {
       toast({ variant: 'destructive', title: 'Error starting interview.', description: 'Could not fetch the first question.' });
@@ -57,6 +59,7 @@ export function InterviewSimulator() {
         role,
         question: currentQuestion,
         userAnswer,
+        askedQuestions,
       });
       setResult(response);
       setInterviewState('answered');
@@ -71,9 +74,10 @@ export function InterviewSimulator() {
     setIsLoading(true);
     setResult(null);
     setUserAnswer('');
-    generateMockInterviewQuestions({ role })
+    generateMockInterviewQuestions({ role, askedQuestions })
       .then(({ question }) => {
         setCurrentQuestion(question);
+        setAskedQuestions((prev) => [...prev, question]);
         setInterviewState('started');
       })
       .catch(() => toast({ variant: 'destructive', title: 'Error fetching next question.' }))
@@ -83,6 +87,7 @@ export function InterviewSimulator() {
   const resetInterview = () => {
     setRole('');
     setCurrentQuestion('');
+    setAskedQuestions([]);
     setUserAnswer('');
     setResult(null);
     setInterviewState('idle');
