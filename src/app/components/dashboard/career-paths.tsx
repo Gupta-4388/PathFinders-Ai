@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { useResume } from '@/app/contexts/resume-context';
 import { useEffect, useState } from 'react';
 import { CheckCircle, Circle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const careerPathsData = [
   {
@@ -56,25 +57,20 @@ const careerPathsData = [
 ];
 
 export function CareerPaths() {
-  const { resumeData } = useResume();
+  const { resumeData, isParsing } = useResume();
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    if (resumeData) {
-      const timer = setTimeout(() => setShouldRender(true), 300);
-      return () => clearTimeout(timer);
-    } else {
-      // For demo purposes, render even without resume data
-      const timer = setTimeout(() => setShouldRender(true), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [resumeData]);
+    // For demo purposes, always render. If resumeData exists, the component will update.
+    const timer = setTimeout(() => setShouldRender(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!shouldRender) {
+  if (!shouldRender || isParsing) {
     return (
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[...Array(3)].map((_, i) => (
-          <Card key={i} className="bg-card/80 animate-pulse h-[450px]"></Card>
+          <Skeleton key={i} className="h-[450px] rounded-lg"></Skeleton>
         ))}
       </div>
     );

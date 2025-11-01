@@ -37,13 +37,8 @@ const parseResumePrompt = ai.definePrompt({
   name: 'parseResumePrompt',
   input: {schema: ParseResumeInputSchema},
   output: {schema: ParseResumeOutputSchema},
-  prompt: `You are an expert HR assistant whose job is to extract skills and experience from resumes.
-
-  Please analyze the following resume and extract all relevant skills and create a summary of the experience.
-  Resume: {{media url=resumeDataUri}}
-
-  Skills: Return a list of skills.
-  Experience Summary: Return a summary of the experience.`,
+  prompt: `You are an expert HR assistant. Analyze the resume and extract skills and a concise experience summary.
+  Resume: {{media url=resumeDataUri}}`,
 });
 
 const parseResumeForSkillsFlow = ai.defineFlow(

@@ -11,23 +11,21 @@ function DashboardPageContent() {
   return (
     <div className="space-y-8">
       <WelcomeHeader />
-       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <ResumeParser />
-          </div>
-          <JobTrendsSummary />
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <ResumeParser />
         </div>
-      <div>
-        <h1 className="font-headline text-3xl md:text-4xl font-bold tracking-tight">
-          Top Career Paths For You
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Based on your profile, here are the top recommended career paths.
-        </p>
-        <div className="mt-8">
-          <CareerPaths />
-        </div>
+        <JobTrendsSummary />
       </div>
+      <div>
+        <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight">
+          Top Career Paths For You
+        </h2>
+        <p className="mt-2 text-muted-foreground">
+          Based on your profile, here are some recommended career paths.
+        </p>
+      </div>
+      <CareerPaths />
     </div>
   );
 }
