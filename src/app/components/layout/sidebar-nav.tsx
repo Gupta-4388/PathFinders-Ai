@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, MessageCircle, Bot, LineChart, FileText, Settings } from 'lucide-react';
+import { LayoutDashboard, MessageCircle, Bot, LineChart, FileText, Settings, BrainCircuit } from 'lucide-react';
 import { Logo } from '../shared/logo';
 import { cn } from '@/lib/utils';
 
@@ -33,7 +33,7 @@ export function SidebarNav() {
         </Link>
         <div className="hidden group-data-[collapsible=icon]:block">
            <Link href="/dashboard">
-              <LayoutDashboard />
+              <BrainCircuit className="h-6 w-6 text-primary" />
            </Link>
         </div>
       </SidebarHeader>

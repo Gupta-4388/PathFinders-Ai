@@ -1,8 +1,10 @@
+import { BrainCircuit } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <div className={cn("flex items-center gap-2.5", className)}>
+    <div className={cn("flex items-center gap-2", className)}>
+      <BrainCircuit className="h-6 w-6 text-primary" />
       <span className="font-headline text-xl font-semibold text-foreground">
         PathFinder AI
       </span>
