@@ -10,10 +10,10 @@ function DashboardPageContent() {
       <WelcomeHeader />
 
       <div className="text-center">
-        <p className="text-lg text-muted-foreground">
+        <p className="font-orbitron text-3xl md:text-4xl font-bold tracking-tight text-foreground/90">
             Transform your AI into a trusted companion.
         </p>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-lg text-muted-foreground mt-2">
             Build loyalty with contextual intelligence that lasts beyond a single session.
         </p>
       </div>
