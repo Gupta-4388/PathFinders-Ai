@@ -8,8 +8,9 @@ import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useResume } from '@/app/contexts/resume-context';
+import { useMemo } from 'react';
 
-const chartData = [
+const defaultChartData = [
   { skill: 'React', demand: 95 },
   { skill: 'Python', demand: 92 },
   { skill: 'SQL', demand: 85 },
@@ -27,11 +28,15 @@ const chartConfig = {
 export function JobTrendsSummary() {
   const { resumeData } = useResume();
 
-  const skillsToShow = resumeData?.skills.slice(0, 5) ?? chartData.map(d => d.skill);
-  const dynamicChartData = skillsToShow.map((skill, index) => ({
-    skill,
-    demand: resumeData ? 80 + Math.floor(Math.random() * 20) : chartData[index]?.demand || 80,
-  }));
+  const chartData = useMemo(() => {
+    if (resumeData && resumeData.skills.length > 0) {
+      return resumeData.skills.slice(0, 5).map((skill) => ({
+        skill,
+        demand: 80 + Math.floor(Math.random() * 20), // Simulate real-time demand score
+      }));
+    }
+    return defaultChartData;
+  }, [resumeData]);
 
   return (
     <Card className="h-full bg-card/60 backdrop-blur-sm border-white/20 shadow-lg flex flex-col">
@@ -40,12 +45,14 @@ export function JobTrendsSummary() {
           <TrendingUp className="h-6 w-6" />
           Skill Demand
         </CardTitle>
-        <CardDescription>A quick look at trending skills.</CardDescription>
+        <CardDescription>
+            {resumeData ? "Demand for skills from your resume." : "A quick look at top trending skills."}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer config={chartConfig} className="h-[180px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart accessibilityLayer data={dynamicChartData} layout="vertical" margin={{ left: 10, right: 40 }}>
+            <LineChart accessibilityLayer data={chartData} layout="vertical" margin={{ left: 10, right: 40 }}>
               <CartesianGrid horizontal={false} />
               <XAxis type="number" hide domain={[70, 100]} />
               <YAxis 
@@ -53,8 +60,9 @@ export function JobTrendsSummary() {
                 type="category" 
                 axisLine={false} 
                 tickLine={false} 
-                width={60} 
+                width={80} 
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                interval={0}
               />
               <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
               <Line 
