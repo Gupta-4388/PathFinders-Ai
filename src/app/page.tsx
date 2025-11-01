@@ -1,3 +1,6 @@
+
+'use client';
+
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -11,6 +14,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useAuth, initializeFirebase } from '@/firebase';
+import { FirebaseClientProvider } from '@/firebase';
 
 const features = [
   {
@@ -45,16 +51,28 @@ const features = [
   },
 ];
 
-export default function LandingPage() {
+function LandingPageContent() {
+  const auth = useAuth();
+  const handleSignIn = async () => {
+    if (auth) {
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        // Redirect to dashboard after successful sign-in
+        window.location.href = '/dashboard';
+      } catch (error) {
+        console.error("Authentication error:", error);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <Link href="/">
             <Logo />
         </Link>
-        <Button asChild>
-          <Link href="/dashboard">Sign In</Link>
-        </Button>
+        <Button onClick={handleSignIn}>Sign In</Button>
       </header>
 
       <main className="flex-grow">
@@ -67,11 +85,9 @@ export default function LandingPage() {
               Empowering every self-learner with AI-driven career guidance. Get personalized insights, practice interviews, and discover your ideal career path.
             </p>
             <div className="mt-8 flex justify-center gap-4">
-              <Button asChild size="lg">
-                <Link href="/dashboard">
+              <Button onClick={handleSignIn} size="lg">
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
               </Button>
             </div>
           </div>
@@ -128,4 +144,14 @@ export default function LandingPage() {
       </footer>
     </div>
   );
+}
+
+
+export default function LandingPage() {
+  const firebaseApp = initializeFirebase();
+  return (
+    <FirebaseClientProvider firebaseApp={firebaseApp}>
+      <LandingPageContent />
+    </FirebaseClientProvider>
+  )
 }
