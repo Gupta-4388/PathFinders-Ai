@@ -12,30 +12,27 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
-    const [name, setName] = useState<string>(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('profileName') || '';
-        }
-        return '';
-    });
-    const [goals, setGoals] = useState<string>(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('profileGoals') || '';
-        }
-        return '';
-    });
+    const [name, setName] = useState<string>('');
+    const [goals, setGoals] = useState<string>('');
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        setIsMounted(true);
+        setName(localStorage.getItem('profileName') || '');
+        setGoals(localStorage.getItem('profileGoals') || '');
+    }, []);
+
+    useEffect(() => {
+        if (isMounted) {
             localStorage.setItem('profileName', name);
         }
-    }, [name]);
+    }, [name, isMounted]);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (isMounted) {
             localStorage.setItem('profileGoals', goals);
         }
-    }, [goals]);
+    }, [goals, isMounted]);
 
   return (
     <ProfileContext.Provider value={{ name, setName, goals, setGoals }}>
