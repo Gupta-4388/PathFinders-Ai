@@ -17,13 +17,17 @@ export function AuthDialog({ children }: { children: React.ReactNode }) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-sm border-white/20">
+        <DialogHeader>
+          <DialogTitle className="sr-only">Authentication</DialogTitle>
+          <DialogDescription className="sr-only">
+            Sign in or sign up to continue.
+          </DialogDescription>
+        </DialogHeader>
         <Tabs defaultValue="signin">
-          <DialogHeader className="p-0">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-          </DialogHeader>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="signin">Sign In</TabsTrigger>
+            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          </TabsList>
           <TabsContent value="signin">
             <SignInForm />
           </TabsContent>
