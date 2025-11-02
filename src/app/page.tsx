@@ -72,7 +72,7 @@ function LandingPageContent() {
             <div className="mt-8 flex justify-center gap-4">
                <Button asChild size="lg">
                 <Link href="/dashboard">
-                  Get Started Free
+                  Explore
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
