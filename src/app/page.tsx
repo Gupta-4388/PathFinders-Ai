@@ -56,18 +56,18 @@ function LandingPageContent() {
         <Link href="/">
             <Logo />
         </Link>
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" asChild>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Button variant="ghost" asChild size="sm">
               <Link href="/signin">Sign In</Link>
           </Button>
-          <Button asChild>
+          <Button asChild size="sm">
               <Link href="/signup">Sign Up</Link>
           </Button>
         </div>
       </header>
 
       <main className="flex-grow">
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
               Unlock Your Career Potential with PathFinder AI
@@ -75,7 +75,7 @@ function LandingPageContent() {
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               Empowering every self-learner with AI-driven career guidance. Get personalized insights, practice interviews, and discover your ideal career path.
             </p>
-            <div className="mt-8 flex justify-center gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                <Button asChild size="lg">
                 <Link href="/dashboard">
                   Explore
@@ -127,7 +127,7 @@ function LandingPageContent() {
       </main>
 
       <footer className="bg-foreground text-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
           <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} PathFinder AI. All rights reserved.</p>
           <div className="flex gap-4 mt-4 sm:mt-0">
             <Link href="#" className="text-sm hover:text-primary transition-colors">Privacy Policy</Link>

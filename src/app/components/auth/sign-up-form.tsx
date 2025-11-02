@@ -102,7 +102,7 @@ export function SignUpForm() {
 
 
   return (
-    <Card className="w-full max-w-md bg-card/60 backdrop-blur-sm border-white/20 shadow-lg">
+    <Card className="w-full max-w-sm sm:max-w-md bg-card/60 backdrop-blur-sm border-white/20 shadow-lg">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
         <CardDescription>Enter your details to get started.</CardDescription>
@@ -155,7 +155,8 @@ export function SignUpForm() {
             </Button>
              <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
               {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-76.2 74.8C307.7 112.5 280.3 102 248 102c-73.3 0-132.3 59.9-132.3 134.3s59 134.3 132.3 134.3c81.3 0 115.7-56.2 120.3-86.3H248v-85.3h236.1c2.3 12.7 3.9 26.9 3.9 41.4z"></path></svg>}
-              Continue with Google
+              <span className="hidden sm:inline">Continue with Google</span>
+              <span className="sm:hidden">Google</span>
             </Button>
           </form>
         </Form>
