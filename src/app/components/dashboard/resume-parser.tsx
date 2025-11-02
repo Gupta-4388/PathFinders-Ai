@@ -38,14 +38,30 @@ export function ResumeParser() {
       reader.onload = async () => {
         const base64File = reader.result as string;
         
-        const result = await parseResumeForSkills({ resumeDataUri: base64File });
-        setResumeData(result);
+        try {
+            const result = await parseResumeForSkills({ resumeDataUri: base64File });
+            setResumeData(result);
 
-        toast({
-          title: "Resume Parsed Successfully!",
-          description: "Your skills and experience have been analyzed.",
-          className: "bg-green-100 dark:bg-green-900 border-green-400 dark:border-green-600",
-        });
+            toast({
+              title: "Resume Parsed Successfully!",
+              description: "Your skills and experience have been analyzed.",
+              className: "bg-green-100 dark:bg-green-900 border-green-400 dark:border-green-600",
+            });
+        } catch (error: any) {
+            console.error(error);
+            let description = "There was a problem parsing your resume. Please try again.";
+            if (error.message && error.message.includes('503')) {
+                description = "The AI service is currently overloaded. Please try again in a few moments.";
+            }
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: description,
+            });
+            setResumeData(null);
+        } finally {
+            setIsParsing(false);
+        }
       };
       reader.onerror = () => {
         throw new Error("Failed to read the file.");
@@ -55,10 +71,9 @@ export function ResumeParser() {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "There was a problem parsing your resume. Please try again.",
+        description: "There was a problem reading your file. Please try again.",
       });
       setResumeData(null);
-    } finally {
       setIsParsing(false);
     }
   };
@@ -103,6 +118,12 @@ export function ResumeParser() {
               <h3 className="font-semibold mb-2">Experience Summary</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {resumeData.experienceSummary}
+              </p>
+            </div>
+             <div>
+              <h3 className="font-semibold mb-2">Raw Text</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed max-h-40 overflow-auto">
+                {resumeData.rawText}
               </p>
             </div>
             <Button onClick={() => { setResumeData(null); setFileName(null); }} variant="outline">
