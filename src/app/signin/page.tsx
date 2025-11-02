@@ -9,7 +9,9 @@ export default function SignInPage() {
       <div className="absolute top-8 left-8">
         <Logo />
       </div>
-      <SignInForm />
+       <div className="w-full max-w-sm sm:max-w-md bg-card/60 backdrop-blur-sm border-white/20 shadow-lg rounded-lg">
+          <SignInForm />
+       </div>
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
         <Link href="/signup" className="underline hover:text-primary">

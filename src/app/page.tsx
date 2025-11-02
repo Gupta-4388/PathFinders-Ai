@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Logo } from './components/shared/logo';
+import { AuthDialog } from './components/auth/auth-dialog';
 
 const features = [
   {
@@ -57,12 +58,12 @@ function LandingPageContent() {
             <Logo />
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Button variant="ghost" asChild size="sm">
-              <Link href="/signin">Sign In</Link>
-          </Button>
-          <Button asChild size="sm">
-              <Link href="/signup">Sign Up</Link>
-          </Button>
+           <AuthDialog>
+            <Button variant="ghost" size="sm">Sign In</Button>
+          </AuthDialog>
+          <AuthDialog>
+            <Button size="sm">Sign Up</Button>
+          </AuthDialog>
         </div>
       </header>
 
@@ -76,12 +77,12 @@ function LandingPageContent() {
               Empowering every self-learner with AI-driven career guidance. Get personalized insights, practice interviews, and discover your ideal career path.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-               <Button asChild size="lg">
-                <Link href="/dashboard">
-                  Explore
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+              <AuthDialog>
+                <Button size="lg">
+                    Explore
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </AuthDialog>
             </div>
           </div>
         </section>

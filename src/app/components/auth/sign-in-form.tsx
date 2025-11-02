@@ -59,8 +59,8 @@ export function SignInForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm sm:max-w-md bg-card/60 backdrop-blur-sm border-white/20 shadow-lg">
-      <CardHeader>
+    <Card className="w-full max-w-sm sm:max-w-md bg-transparent border-0 shadow-none">
+      <CardHeader className="text-center">
         <CardTitle className="font-headline text-2xl">Sign In</CardTitle>
         <CardDescription>Welcome back! Please sign in to your account.</CardDescription>
       </CardHeader>
