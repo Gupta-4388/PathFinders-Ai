@@ -1,0 +1,221 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user in the PathFinder AI application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name."
+        },
+        "creationDate": {
+          "type": "string",
+          "description": "Date and time when the user account was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "creationDate"
+      ]
+    },
+    "Resume": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Resume",
+      "type": "object",
+      "description": "Represents a user's resume document stored in the system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the resume."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Resume)"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Name of the resume file."
+        },
+        "uploadDate": {
+          "type": "string",
+          "description": "Date and time when the resume was uploaded.",
+          "format": "date-time"
+        },
+        "parsedData": {
+          "type": "string",
+          "description": "The extracted JSON data from the resume parsing process."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "fileName",
+        "uploadDate"
+      ]
+    },
+    "CareerPath": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CareerPath",
+      "type": "object",
+      "description": "Represents a possible career path.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the career path."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the career path."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the career path."
+        },
+        "requiredSkills": {
+          "type": "array",
+          "description": "An array of required skills to obtain the career path.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "requiredSkills"
+      ]
+    },
+    "AiMentorSession": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AiMentorSession",
+      "type": "object",
+      "description": "Represents a mentoring session with the AI.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the session."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N AiMentorSession)"
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Timestamp for session start",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Timestamp for when the session ended.",
+          "format": "date-time"
+        },
+        "conversationLog": {
+          "type": "string",
+          "description": "Raw text log of the complete conversation with the AI Mentor."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "startTime"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles.  Accessed only by the user with matching userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/resumes/{resumeId}",
+        "definition": {
+          "entityName": "Resume",
+          "schema": {
+            "$ref": "#/backend/entities/Resume"
+          },
+          "description": "Stores user resumes. Accessed only by the user with matching userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "resumeId",
+              "description": "The unique identifier of the resume."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/aiMentorSessions/{aiMentorSessionId}",
+        "definition": {
+          "entityName": "AiMentorSession",
+          "schema": {
+            "$ref": "#/backend/entities/AiMentorSession"
+          },
+          "description": "Stores AI mentor session logs. Accessed only by the user with matching userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "aiMentorSessionId",
+              "description": "The unique identifier of the AI mentor session."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/careerPaths/{careerPathId}",
+        "definition": {
+          "entityName": "CareerPath",
+          "schema": {
+            "$ref": "#/backend/entities/CareerPath"
+          },
+          "description": "Stores career path information. Publicly accessible.",
+          "params": [
+            {
+              "name": "careerPathId",
+              "description": "The unique identifier of the career path."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to ensure security, scalability, and ease of debugging, adhering to the core design principles of Authorization Independence, Clarity of Intent, DBAC (Database-Based Access Control), and QAPs (Rules are not Filters). It leverages denormalization and structural segregation to achieve these goals.\n\n**Authorization Independence:**  Ownership is explicit via path-based ownership `/users/{userId}/...`. User-specific data (resumes, AI mentor sessions) resides under the user's document, eliminating the need for `get()` calls in security rules to determine ownership. This ensures atomic operations and simplifies debugging.\n\n**Clarity of Intent:**  The path structure clearly defines the relationships between entities. For example, resumes and AI mentor sessions belonging to a specific user are directly nested under that user's path (`/users/{userId}/resumes/{resumeId}` and `/users/{userId}/aiMentorSessions/{aiMentorSessionId}`), making the authorization intent obvious.\n\n**DBAC (Database-Based Access Control):** User roles or permissions are not required for this basic app setup. The primary authorization mechanism relies on `request.auth.uid` and the hierarchical path structure to ensure users can only access their own data.\n\n**QAPs (Rules are not Filters):**  The structure facilitates secure `list` operations. Since user-specific data is segregated under each user's path, listing resumes or AI mentor sessions under `/users/{userId}/resumes` or `/users/{userId}/aiMentorSessions` is inherently secure, as rules can easily restrict access based on the `userId`.\n\n**Data Segregation:**  All documents within a collection share the same security requirements.  There is no mixing of public and private data within the same collection.  User data is segregated by `/users/{userId}`.\n\n**Invariants:** The structure supports the integrity of ownership, timestamps, and other data. Timestamps (`creationDate`, `uploadDate`, `startTime`, `endTime`) can be enforced at creation and modification through rules.  Ownership is maintained by the path structure, ensuring that only the authenticated user (`request.auth.uid`) can modify data under their specific path."
+  }
+}

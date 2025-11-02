@@ -1,0 +1,131 @@
+/**
+ * @file Firebase Security Rules for PathFinder AI.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for private data, with public read access for career paths. User data (profiles, resumes, AI mentor sessions) is accessible only to the authenticated user.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profiles.
+ * - /users/{userId}/resumes/{resumeId}: Stores resumes owned by a specific user.
+ * - /users/{userId}/aiMentorSessions/{aiMentorSessionId}: Stores AI mentor session logs for a user.
+ * - /careerPaths/{careerPathId}: Stores publicly readable career path information.
+ *
+ * Key Security Decisions:
+ * - Users can only access their own profile data, resumes, and AI mentor session logs.
+ * - Career path data is publicly readable but not writable through the rules.
+ * - No user listing is allowed to prevent unauthorized data access.
+ * - Data validation is relaxed in this prototyping phase, focusing on authorization.
+ *
+ * Denormalization for Authorization:
+ * - The `userId` is embedded within the paths `/users/{userId}/resumes/{resumeId}` and `/users/{userId}/aiMentorSessions/{aiMentorSessionId}`, allowing rules to directly enforce ownership without additional `get()` calls.
+ *
+ * Structural Segregation:
+ * - User-specific data (resumes, AI mentor sessions) is stored under the user's document (`/users/{userId}`), ensuring that listing operations can be securely scoped to the owning user.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Protects user profile data. Only the authenticated user can read and write their own profile.
+     * @path /users/{userId}
+     * @allow (create) - User with UID 'user_abc' creates their profile with id: 'user_abc'
+     * @deny (create) - User with UID 'user_abc' attempts to create a profile with id: 'user_xyz'.
+     * @allow (get) - User with UID 'user_abc' reads their own profile.
+     * @deny (get) - User with UID 'user_abc' attempts to read another user's profile.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if false;
+
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id; //Immutable id
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Protects user resumes. Only the authenticated user can manage their own resumes.
+     * @path /users/{userId}/resumes/{resumeId}
+     * @allow (create) - User 'user_abc' creates a resume under their profile.
+     * @deny (create) - User 'user_abc' attempts to create a resume under another user's profile.
+     * @allow (get) - User 'user_abc' reads a resume under their profile.
+     * @deny (get) - User 'user_abc' attempts to read a resume under another user's profile.
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /users/{userId}/resumes/{resumeId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Protects AI mentor session logs. Only the authenticated user can manage their own session logs.
+     * @path /users/{userId}/aiMentorSessions/{aiMentorSessionId}
+     * @allow (create) - User 'user_abc' creates a session log under their profile.
+     * @deny (create) - User 'user_abc' attempts to create a session log under another user's profile.
+     * @allow (get) - User 'user_abc' reads a session log under their profile.
+     * @deny (get) - User 'user_abc' attempts to read a session log under another user's profile.
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /users/{userId}/aiMentorSessions/{aiMentorSessionId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Allows public read access to career path information. Write operations are denied through rules.
+     * @path /careerPaths/{careerPathId}
+     * @allow (get) - Any user can read career path data.
+     * @deny (create) - No one can create career path data through the rules. (This should be done via controlled backend processes).
+     * @principle Provides public read access with restricted writes.
+     */
+    match /careerPaths/{careerPathId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+  }
+}
