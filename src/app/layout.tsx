@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'PathFinder AI',
+  title: 'PathFinders AI',
   description: 'Empowering every self-learner with AI-driven career guidance.',
 };
 

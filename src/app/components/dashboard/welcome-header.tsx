@@ -6,7 +6,7 @@ export function WelcomeHeader() {
         Welcome Back, PathFinder!
       </h1>
       <p className="mt-2 text-muted-foreground">
-        PathFinder AI is your personal career navigator. Analyze your resume, explore tailored career paths, practice for interviews, and stay ahead of job market trends. Ready to get started?
+        PathFinders AI is your personal career navigator. Analyze your resume, explore tailored career paths, practice for interviews, and stay ahead of job market trends. Ready to get started?
       </p>
     </div>
   );

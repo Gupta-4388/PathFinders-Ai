@@ -1,6 +1,6 @@
 
 /**
- * @file Firebase Security Rules for PathFinder AI.
+ * @file Firebase Security Rules for PathFinders AI.
  *
  * Core Philosophy:
  * This ruleset enforces a strict user-ownership model for private data, with public read access for career paths. User data (profiles, resumes, AI mentor sessions) is accessible only to the authenticated user.

@@ -6,7 +6,7 @@ export function Logo({ className }: { className?: string }) {
     <div className={cn("flex items-center gap-2", className)}>
       <BrainCircuit className="h-6 w-6 text-primary" />
       <span className="font-headline text-xl font-semibold text-foreground">
-        PathFinder AI
+        PathFinders AI
       </span>
     </div>
   );

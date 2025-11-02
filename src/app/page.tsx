@@ -71,7 +71,7 @@ function LandingPageContent() {
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
-              Unlock Your Career Potential with PathFinder AI
+              Unlock Your Career Potential with PathFinders AI
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               Empowering every self-learner with AI-driven career guidance. Get personalized insights, practice interviews, and discover your ideal career path.
@@ -129,7 +129,7 @@ function LandingPageContent() {
 
       <footer className="bg-foreground text-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} PathFinder AI. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} PathFinders AI. All rights reserved.</p>
           <div className="flex gap-4 mt-4 sm:mt-0">
             <Link href="#" className="text-sm hover:text-primary transition-colors">Privacy Policy</Link>
             <Link href="#" className="text-sm hover:text-primary transition-colors">Terms of Service</Link>
