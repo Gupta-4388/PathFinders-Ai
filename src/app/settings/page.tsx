@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '../contexts/profile-context';
 import { ChangePasswordForm } from '../components/auth/change-password-form';
+import { AppearanceForm } from '../components/settings/appearance-form';
 
 function SettingsPageContent() {
     const { name, setName, goals, setGoals } = useProfile();
@@ -29,6 +30,7 @@ function SettingsPageContent() {
                     Manage your profile and preferences.
                 </p>
             </div>
+            <AppearanceForm />
             <Card>
                 <CardHeader>
                     <CardTitle>Profile</CardTitle>
