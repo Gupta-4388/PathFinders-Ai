@@ -100,8 +100,8 @@ function LandingPageContent() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
               <Image
-                data-ai-hint="abstract network"
-                src="https://picsum.photos/seed/abstract-network/600/400"
+                data-ai-hint="artificial intelligence"
+                src="https://images.unsplash.com/photo-1674027444485-cec3da58eef4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2MjA1MjI4NHww&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Our Mission"
                 width={600}
                 height={400}
