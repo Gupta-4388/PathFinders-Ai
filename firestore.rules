@@ -1,3 +1,4 @@
+
 /**
  * @file Firebase Security Rules for PathFinder AI.
  *
@@ -48,11 +49,11 @@ service cloud.firestore {
         return isOwner(userId) && resource != null;
       }
 
-      allow get: if isOwner(userId);
+      allow read: if isOwner(userId);
       allow list: if false;
 
-      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id; //Immutable id
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
 

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -55,9 +56,14 @@ function LandingPageContent() {
         <Link href="/">
             <Logo />
         </Link>
-        <Button asChild>
-            <Link href="/dashboard">Explore</Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" asChild>
+              <Link href="/signin">Sign In</Link>
+          </Button>
+          <Button asChild>
+              <Link href="/signup">Sign Up</Link>
+          </Button>
+        </div>
       </header>
 
       <main className="flex-grow">

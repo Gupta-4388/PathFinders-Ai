@@ -4,9 +4,12 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '../shared/logo';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, LayoutDashboard } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useFirebase } from '@/firebase';
+import { useUser } from '@/firebase/auth/use-user';
+
 
 function capitalize(str: string) {
   if (!str) return '';
@@ -16,6 +19,14 @@ function capitalize(str: string) {
 export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
+  const { auth } = useFirebase();
+  const { user } = useUser();
+
+  const handleSignOut = async () => {
+    await auth.signOut();
+    router.push('/signin');
+  };
+  
   const pathParts = pathname.split('/').filter(Boolean);
   const pageTitle = pathParts.length > 0 ? capitalize(pathParts[pathParts.length -1].replace('-', ' ')) : 'Dashboard';
   const isDashboard = pathname === '/dashboard' || pathname === '/';
@@ -44,6 +55,12 @@ export function AppHeader() {
       </div>
 
       <div className="flex flex-1 items-center justify-end gap-2">
+        {user && (
+            <Button variant="ghost" onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+            </Button>
+        )}
       </div>
     </header>
   );
