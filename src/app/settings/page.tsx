@@ -30,7 +30,6 @@ function SettingsPageContent() {
                     Manage your profile and preferences.
                 </p>
             </div>
-            <AppearanceForm />
             <Card>
                 <CardHeader>
                     <CardTitle>Profile</CardTitle>
@@ -49,6 +48,7 @@ function SettingsPageContent() {
                 </CardContent>
             </Card>
             <ChangePasswordForm />
+            <AppearanceForm />
         </div>
     );
 }

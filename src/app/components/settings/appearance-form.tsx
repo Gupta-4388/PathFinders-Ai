@@ -27,9 +27,9 @@ export function AppearanceForm() {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-3 gap-4">
-                    <Skeleton className="h-24" />
-                    <Skeleton className="h-24" />
-                    <Skeleton className="h-24" />
+                    <Skeleton className="h-20" />
+                    <Skeleton className="h-20" />
+                    <Skeleton className="h-20" />
                 </div>
             </CardContent>
         </Card>
@@ -49,7 +49,7 @@ export function AppearanceForm() {
           <Button
             variant="outline"
             className={cn(
-              'h-24 flex-col gap-2',
+              'h-20 flex-col gap-2',
               theme === 'light' && 'border-primary ring-2 ring-primary'
             )}
             onClick={() => setTheme('light')}
@@ -60,7 +60,7 @@ export function AppearanceForm() {
           <Button
             variant="outline"
             className={cn(
-              'h-24 flex-col gap-2',
+              'h-20 flex-col gap-2',
               theme === 'dark' && 'border-primary ring-2 ring-primary'
             )}
             onClick={() => setTheme('dark')}
@@ -71,7 +71,7 @@ export function AppearanceForm() {
           <Button
             variant="outline"
             className={cn(
-              'h-24 flex-col gap-2',
+              'h-20 flex-col gap-2',
               theme === 'system' && 'border-primary ring-2 ring-primary'
             )}
             onClick={() => setTheme('system')}
