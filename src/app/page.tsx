@@ -56,7 +56,7 @@ function LandingPageContent() {
             <Logo />
         </Link>
         <Button asChild>
-            <Link href="/dashboard">Get Started</Link>
+            <Link href="/dashboard">Explore</Link>
         </Button>
       </header>
 
@@ -100,8 +100,8 @@ function LandingPageContent() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
               <Image
-                data-ai-hint="team brainstorming"
-                src="https://picsum.photos/seed/pathfinder-about/600/400"
+                data-ai-hint="artificial intelligence"
+                src="https://picsum.photos/seed/ai-mission/600/400"
                 alt="Our Mission"
                 width={600}
                 height={400}
