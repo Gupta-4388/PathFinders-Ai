@@ -100,8 +100,8 @@ function LandingPageContent() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
               <Image
-                data-ai-hint="robotics ai"
-                src="https://picsum.photos/seed/robotics/600/400"
+                data-ai-hint="robotics technology"
+                src="https://picsum.photos/seed/technology/600/400"
                 alt="Our Mission"
                 width={600}
                 height={400}
