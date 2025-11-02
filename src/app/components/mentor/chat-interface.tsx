@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import { Send, User, Bot, Loader2, Lightbulb, BookOpen, GraduationCap } from 'lucide-react';
+import { Send, User, Bot, Loader2, Lightbulb, BookOpen, GraduationCap, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,6 +11,7 @@ import { useResume } from '@/app/contexts/resume-context';
 import { aiCareerMentor } from '@/ai/flows/ai-career-mentor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 interface Message {
   text: string;
@@ -86,9 +87,13 @@ export function ChatInterface() {
                   <CardTitle className="text-base flex items-center gap-2"><GraduationCap className="h-4 w-4"/> Learning Recommendations</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0 space-y-3">
-                  {data.learningRecommendations.map((rec: { resource: string, reason: string }, index: number) => (
+                  {data.learningRecommendations.map((rec: { resource: string, reason: string, url: string }, index: number) => (
                     <div key={index} className="text-sm">
-                      <p className="font-semibold flex items-center gap-2"><BookOpen className="h-4 w-4 text-primary" /> {rec.resource}</p>
+                      <Link href={rec.url} target="_blank" rel="noopener noreferrer" className="font-semibold flex items-center gap-2 hover:underline">
+                        <BookOpen className="h-4 w-4 text-primary" /> 
+                        {rec.resource}
+                        <ArrowUpRight className="h-3 w-3" />
+                      </Link>
                       <p className="text-muted-foreground pl-6">{rec.reason}</p>
                     </div>
                   ))}

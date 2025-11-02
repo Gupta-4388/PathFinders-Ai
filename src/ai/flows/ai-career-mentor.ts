@@ -30,8 +30,9 @@ const AICareerMentorOutputSchema = z.object({
     skillGaps: z.array(z.string()).optional().describe("A list of skills the user might be missing for their career goals, based on their resume."),
     learningRecommendations: z.array(z.object({
         resource: z.string().describe("A specific course, book, or resource to learn a new skill."),
-        reason: z.string().describe("Why this resource is recommended for the user.")
-    })).optional().describe("A list of personalized learning recommendations.")
+        reason: z.string().describe("Why this resource is recommended for the user."),
+        url: z.string().url().describe("A URL to access the recommended resource. This should be a real, accessible link.")
+    })).optional().describe("A list of personalized learning recommendations with accessible URLs.")
   }).describe('The AI career mentor\'s response in JSON format.')
 });
 export type AICareerMentorOutput = z.infer<typeof AICareerMentorOutputSchema>;
@@ -45,6 +46,8 @@ const aiCareerMentorPrompt = ai.definePrompt({
   input: {schema: AICareerMentorInputSchema},
   output: {schema: AICareerMentorOutputSchema},
   prompt: `You are an AI career mentor. You are helping the user with career advice, skill gap analysis, and learning recommendations.
+When you recommend a learning resource, you MUST provide a real, publicly accessible URL to it. For example, for courses, link to Udemy, Coursera, or a similar platform.
+
 Your response MUST be in JSON format.
 
 {{#if resumeText}}
