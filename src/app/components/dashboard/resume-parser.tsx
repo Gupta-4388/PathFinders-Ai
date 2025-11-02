@@ -37,15 +37,9 @@ export function ResumeParser() {
       reader.readAsDataURL(file);
       reader.onload = async () => {
         const base64File = reader.result as string;
-
-        // For simplicity, we are not extracting raw text from PDF on client.
-        // The GenAI model will handle the text extraction from the data URI.
-        const rawText = file.type === 'application/pdf' 
-          ? `Content of ${file.name}` 
-          : await file.text();
         
         const result = await parseResumeForSkills({ resumeDataUri: base64File });
-        setResumeData({ ...result, rawText });
+        setResumeData(result);
 
         toast({
           title: "Resume Parsed Successfully!",
