@@ -50,6 +50,7 @@ const prompt = ai.definePrompt({
 Role: {{{role}}}
 
 The interview should cover a range of topics relevant to the role, including technical skills, behavioral questions, and problem-solving scenarios.
+Do not ask any questions about "PathFinder AI".
 
 {{#if userAnswer}}
 The user has answered the following question:
