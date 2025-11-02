@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -19,7 +20,7 @@ const AICareerMentorInputSchema = z.object({
     .string()
     .describe('The text extracted from the user\'s resume.'),
   userInput: z
-    .string()
+    .string()    
     .describe('The user\'s message to the AI career mentor.'),
 });
 export type AICareerMentorInput = z.infer<typeof AICareerMentorInputSchema>;
@@ -46,7 +47,7 @@ const aiCareerMentorPrompt = ai.definePrompt({
   input: {schema: AICareerMentorInputSchema},
   output: {schema: AICareerMentorOutputSchema},
   prompt: `You are an AI career mentor. You are helping the user with career advice, skill gap analysis, and learning recommendations.
-When you recommend a learning resource, you MUST provide a real, publicly accessible URL to it. For example, for courses, link to Udemy, Coursera, or a similar platform.
+When you recommend a learning resource, you MUST provide a real, publicly accessible URL to it. For courses, provide links from a variety of platforms like Udemy, Coursera, edX, Pluralsight, or official documentation, not just one source.
 
 Your response MUST be in JSON format.
 
