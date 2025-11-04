@@ -1,17 +1,22 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { generateMockInterviewQuestions } from '@/ai/flows/generate-mock-interview-questions';
+import { textToSpeech } from '@/ai/flows/text-to-speech';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Bot, Star, ArrowLeft, BrainCircuit, CheckCircle } from 'lucide-react';
+import { Loader2, Bot, Star, ArrowLeft, BrainCircuit, CheckCircle, Video, Mic, Type, AlertCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-const INTERVIEW_LENGTH = 15;
+const INTERVIEW_LENGTH = 5;
 type InterviewState = 'idle' | 'started' | 'answered' | 'finished';
+type InterviewType = 'text' | 'audio' | 'video';
 
 interface InterviewResult {
   question: string;
@@ -22,13 +27,52 @@ interface InterviewResult {
 
 export function InterviewSimulator() {
   const [role, setRole] = useState('');
+  const [interviewType, setInterviewType] = useState<InterviewType>('text');
   const [currentQuestion, setCurrentQuestion] = useState('');
+  const [currentQuestionAudio, setCurrentQuestionAudio] = useState<string | null>(null);
   const [askedQuestions, setAskedQuestions] = useState<string[]>([]);
   const [userAnswer, setUserAnswer] = useState('');
   const [interviewState, setInterviewState] = useState<InterviewState>('idle');
   const [results, setResults] = useState<InterviewResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGettingQuestion, setIsGettingQuestion] = useState(false);
   const { toast } = useToast();
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState(true);
+
+  useEffect(() => {
+    if (interviewState === 'started' && (interviewType === 'video' || interviewType === 'audio')) {
+      const getPermissions = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: interviewType === 'video', 
+            audio: true 
+          });
+          setHasCameraPermission(true);
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          console.error('Error accessing media devices:', error);
+          setHasCameraPermission(false);
+          toast({
+            variant: 'destructive',
+            title: 'Media Access Denied',
+            description: 'Please enable camera and microphone permissions in your browser settings.',
+          });
+        }
+      };
+      getPermissions();
+
+      return () => {
+        if (videoRef.current && videoRef.current.srcObject) {
+          const stream = videoRef.current.srcObject as MediaStream;
+          stream.getTracks().forEach(track => track.stop());
+        }
+      }
+    }
+  }, [interviewState, interviewType, toast]);
 
   const handleStart = async (e: FormEvent) => {
     e.preventDefault();
@@ -37,36 +81,46 @@ export function InterviewSimulator() {
       return;
     }
     setIsLoading(true);
+    setIsGettingQuestion(true);
     try {
       const { question } = await generateMockInterviewQuestions({ role, askedQuestions: [] });
       setCurrentQuestion(question);
       setAskedQuestions([question]);
+      if (interviewType !== 'text') {
+        const audio = await textToSpeech(question);
+        setCurrentQuestionAudio(audio.media);
+      }
       setInterviewState('started');
     } catch (error) {
       toast({ variant: 'destructive', title: 'Error starting interview.', description: 'Could not fetch the first question.' });
     } finally {
       setIsLoading(false);
+      setIsGettingQuestion(false);
     }
   };
 
   const handleSubmitAnswer = async (e: FormEvent) => {
     e.preventDefault();
-    if (!userAnswer.trim()) {
+    if (interviewType === 'text' && !userAnswer.trim()) {
       toast({ variant: 'destructive', title: 'Please provide an answer.' });
       return;
     }
     setIsLoading(true);
+
+    // Placeholder for audio/video processing
+    const answerToSubmit = interviewType === 'text' ? userAnswer : "User provided an audio/video answer. Please evaluate based on a hypothetical strong answer.";
+
     try {
       const response = await generateMockInterviewQuestions({
         role,
         question: currentQuestion,
-        userAnswer,
+        userAnswer: answerToSubmit,
         askedQuestions,
       });
 
       const newResult: InterviewResult = {
         question: currentQuestion,
-        answer: userAnswer,
+        answer: answerToSubmit,
         score: response.score,
         feedback: response.feedback,
       };
@@ -76,8 +130,8 @@ export function InterviewSimulator() {
         setInterviewState('finished');
       } else {
         setInterviewState('answered');
-        setCurrentQuestion(response.question);
-        setAskedQuestions(prev => [...prev, response.question]);
+        setCurrentQuestion(''); // Clear old question
+        setCurrentQuestionAudio(null);
       }
 
     } catch (error) {
@@ -87,9 +141,23 @@ export function InterviewSimulator() {
     }
   };
   
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     setUserAnswer('');
-    setInterviewState('started');
+    setIsGettingQuestion(true);
+    try {
+      const { question: nextQuestion } = await generateMockInterviewQuestions({ role, askedQuestions });
+       if (interviewType !== 'text') {
+        const audio = await textToSpeech(nextQuestion);
+        setCurrentQuestionAudio(audio.media);
+      }
+      setCurrentQuestion(nextQuestion);
+      setAskedQuestions(prev => [...prev, nextQuestion]);
+      setInterviewState('started');
+    } catch (error) {
+        toast({ variant: 'destructive', title: 'Error getting next question.' });
+    } finally {
+        setIsGettingQuestion(false);
+    }
   };
   
   const resetInterview = () => {
@@ -99,6 +167,8 @@ export function InterviewSimulator() {
     setUserAnswer('');
     setResults([]);
     setInterviewState('idle');
+    setInterviewType('text');
+    setCurrentQuestionAudio(null);
   };
 
   const totalScore = results.reduce((sum, r) => sum + (r.score || 0), 0);
@@ -115,14 +185,39 @@ export function InterviewSimulator() {
       
       {interviewState === 'idle' && (
         <form onSubmit={handleStart}>
-          <CardContent>
-            <p className="font-semibold mb-2">What role are you interviewing for?</p>
-            <Input 
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              placeholder="e.g., Senior Frontend Developer" 
-              disabled={isLoading}
-            />
+          <CardContent className="space-y-6">
+            <div>
+                <Label className="font-semibold mb-2 block">What role are you interviewing for?</Label>
+                <Input 
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="e.g., Senior Frontend Developer" 
+                disabled={isLoading}
+                />
+            </div>
+            <div>
+                <Label className="font-semibold mb-3 block">Interview Type</Label>
+                 <RadioGroup defaultValue="text" value={interviewType} onValueChange={(v: any) => setInterviewType(v)} className="grid grid-cols-3 gap-4">
+                    <div>
+                        <RadioGroupItem value="text" id="r-text" className="peer sr-only" />
+                        <Label htmlFor="r-text" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Type className="mb-3 h-6 w-6" /> Text
+                        </Label>
+                    </div>
+                     <div>
+                        <RadioGroupItem value="audio" id="r-audio" className="peer sr-only" />
+                        <Label htmlFor="r-audio" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Mic className="mb-3 h-6 w-6" /> Audio
+                        </Label>
+                    </div>
+                     <div>
+                        <RadioGroupItem value="video" id="r-video" className="peer sr-only" />
+                        <Label htmlFor="r-video" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Video className="mb-3 h-6 w-6" /> Video
+                        </Label>
+                    </div>
+                </RadioGroup>
+            </div>
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={isLoading}>
@@ -145,21 +240,49 @@ export function InterviewSimulator() {
           <CardContent className="space-y-4 pt-6">
             <div className="flex gap-3">
               <Bot className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
-              <p className="p-3 bg-secondary rounded-lg font-medium">{currentQuestion}</p>
+               <div className="p-3 bg-secondary rounded-lg font-medium w-full space-y-3">
+                {isGettingQuestion ? <Loader2 className="h-5 w-5 animate-spin" /> : <p>{currentQuestion}</p>}
+                {currentQuestionAudio && !isGettingQuestion && (
+                    <audio src={currentQuestionAudio} controls autoPlay className="w-full" />
+                )}
+               </div>
             </div>
-            <Textarea
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder="Your answer..."
-              rows={6}
-              disabled={isLoading}
-            />
+            
+            {interviewType === 'text' ? (
+                <Textarea
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Your answer..."
+                rows={6}
+                disabled={isLoading}
+                />
+            ) : (
+                <div className="bg-secondary rounded-lg p-4 space-y-4">
+                    <video ref={videoRef} className={`w-full aspect-video rounded-md bg-black ${interviewType !== 'video' ? 'hidden' : ''}`} autoPlay muted />
+                    {!hasCameraPermission && (
+                         <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Camera/Mic Access Required</AlertTitle>
+                            <AlertDescription>
+                                Please allow camera and microphone access to use this feature.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    <div className="text-center">
+                        <Button type="button" variant="destructive" size="lg" disabled={isLoading}>
+                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mic className="mr-2 h-4 w-4" />}
+                            {isLoading ? 'Processing...' : 'Start Recording'}
+                        </Button>
+                        <p className="text-xs text-muted-foreground mt-2">Audio/video recording coming soon.</p>
+                    </div>
+                </div>
+            )}
           </CardContent>
           <CardFooter className="justify-between">
             <Button variant="outline" onClick={resetInterview} type="button">
               <ArrowLeft className="mr-2 h-4 w-4" /> End Interview
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || isGettingQuestion}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit Answer
             </Button>
@@ -189,8 +312,8 @@ export function InterviewSimulator() {
             <Button variant="outline" onClick={resetInterview}>
              <ArrowLeft className="mr-2 h-4 w-4" /> End Interview
             </Button>
-            <Button onClick={handleNextQuestion} disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button onClick={handleNextQuestion} disabled={isGettingQuestion}>
+              {isGettingQuestion && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Next Question
             </Button>
           </CardFooter>
