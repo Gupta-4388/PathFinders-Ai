@@ -121,6 +121,7 @@ export function InterviewSimulator() {
             setIsLoading(false);
             return;
           }
+          setUserAnswer(transcribedText);
           await submitAnswerLogic(transcribedText);
         } catch (sttError) {
           console.error('STT Error:', sttError);
@@ -382,11 +383,6 @@ export function InterviewSimulator() {
                 <Button type="submit" disabled={isLoading || isGettingQuestion}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Submit Answer
-                </Button>
-            )}
-            {interviewType !== 'text' && !isRecording && (
-                 <Button type="button" disabled={true}>
-                  Submit
                 </Button>
             )}
           </CardFooter>
