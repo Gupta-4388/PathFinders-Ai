@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, FormEvent, useEffect, useRef } from 'react';
@@ -356,9 +357,9 @@ export function InterviewSimulator() {
                     {!hasCameraPermission && (
                          <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Camera/Mic Access Denied</AlertTitle>
+                            <AlertTitle>Camera/Mic Access Required</AlertTitle>
                             <AlertDescription>
-                                Please allow camera and microphone access in your browser settings to use this feature.
+                                Please allow camera and microphone access to use this feature.
                             </AlertDescription>
                         </Alert>
                     )}
