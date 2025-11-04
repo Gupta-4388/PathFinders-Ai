@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, FormEvent, useEffect, useRef } from 'react';
@@ -64,11 +63,15 @@ export function InterviewSimulator() {
         } catch (error) {
           console.error('Error accessing media devices:', error);
           setHasCameraPermission(false);
-          toast({
-            variant: 'destructive',
-            title: 'Media Access Denied',
-            description: 'Please enable camera and microphone permissions in your browser settings.',
-          });
+          if (error instanceof DOMException && error.name === 'NotAllowedError') {
+             // This is handled by the Alert in the JSX
+          } else {
+            toast({
+                variant: 'destructive',
+                title: 'Media Access Error',
+                description: 'Could not access camera/microphone. Please check device settings.',
+            });
+          }
         }
       };
       getPermissions();
@@ -207,7 +210,6 @@ export function InterviewSimulator() {
     setIsRecording(true);
     audioChunksRef.current = [];
     
-    // Choose a MIME type that is likely to be supported
     const options = { mimeType: 'audio/webm; codecs=opus' };
     try {
       mediaRecorderRef.current = new MediaRecorder(mediaStreamRef.current, options);
@@ -354,9 +356,9 @@ export function InterviewSimulator() {
                     {!hasCameraPermission && (
                          <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Camera/Mic Access Required</AlertTitle>
+                            <AlertTitle>Camera/Mic Access Denied</AlertTitle>
                             <AlertDescription>
-                                Please allow camera and microphone access to use this feature.
+                                Please allow camera and microphone access in your browser settings to use this feature.
                             </AlertDescription>
                         </Alert>
                     )}

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { InterviewSimulator } from '@/app/components/interview/interview-simulator';
