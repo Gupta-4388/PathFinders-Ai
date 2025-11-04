@@ -5,3 +5,4 @@ import '@/ai/flows/ai-career-mentor.ts';
 import '@/ai/flows/generate-mock-interview-questions.ts';
 import '@/ai/flows/parse-resume-for-skills.ts';
 import '@/ai/flows/text-to-speech.ts';
+import '@/ai/flows/speech-to-text.ts';
