@@ -57,7 +57,7 @@ export function InterviewSimulator() {
           });
           mediaStreamRef.current = stream;
           setHasCameraPermission(true);
-          if (videoRef.current && interviewType === 'video') {
+          if (videoRef.current) {
             videoRef.current.srcObject = stream;
           }
         } catch (error) {
@@ -177,7 +177,7 @@ export function InterviewSimulator() {
 
   const handleStartRecording = () => {
     if (!mediaStreamRef.current) {
-        toast({ variant: 'destructive', title: 'Media stream not available.' });
+        toast({ variant: 'destructive', title: 'Media stream not available. Please allow camera/mic access.' });
         return;
     }
     setIsRecording(true);
@@ -337,9 +337,15 @@ export function InterviewSimulator() {
                         </Alert>
                     )}
                     <div className="text-center">
-                        <Button type="button" variant={isRecording ? 'destructive' : 'default'} size="lg" onClick={handleRecordButtonClick} disabled={isLoading || isGettingQuestion}>
-                            {isRecording ? <Square className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
-                            {isRecording ? 'Stop Recording' : 'Start Recording'}
+                        <Button type="button" variant={isRecording ? 'destructive' : 'default'} size="lg" onClick={handleRecordButtonClick} disabled={isLoading || isGettingQuestion || !hasCameraPermission}>
+                            {isLoading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : isRecording ? (
+                                <Square className="mr-2 h-4 w-4" />
+                            ) : (
+                                <Mic className="mr-2 h-4 w-4" />
+                            )}
+                            {isLoading ? 'Processing...' : isRecording ? 'Stop Recording' : 'Start Recording'}
                         </Button>
                         <p className="text-xs text-muted-foreground mt-2">Speech-to-text coming soon.</p>
                     </div>
@@ -356,8 +362,8 @@ export function InterviewSimulator() {
                 Submit Answer
                 </Button>
             )}
-            {interviewType !== 'text' && (
-                <Button type="button" onClick={handleStopRecording} disabled={isLoading || isGettingQuestion || !isRecording}>
+            {interviewType !== 'text' && !isRecording && (
+                 <Button type="button" onClick={handleStopRecording} disabled={true}>
                   Submit
                 </Button>
             )}
@@ -423,5 +429,3 @@ export function InterviewSimulator() {
     </Card>
   );
 }
-
-    
