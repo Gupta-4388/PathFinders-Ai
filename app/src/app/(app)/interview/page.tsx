@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, FormEvent, useEffect, useRef } from 'react';
@@ -27,7 +26,7 @@ interface InterviewResult {
   feedback?: string;
 }
 
-export function InterviewSimulator() {
+function InterviewSimulator() {
   const [role, setRole] = useState('');
   const [interviewType, setInterviewType] = useState<InterviewType>('text');
   const [currentQuestion, setCurrentQuestion] = useState('');
@@ -451,6 +450,7 @@ export function InterviewSimulator() {
     </Card>
   );
 }
+
 
 export default function InterviewPage() {
   return (
