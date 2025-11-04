@@ -104,24 +104,15 @@ export function InterviewSimulator() {
       setIsGettingQuestion(false);
     }
   };
+  
+  const submitRecordedAnswer = async () => {
+      // Placeholder for audio/video processing
+      const answerToSubmit = "User provided an audio/video answer. Please evaluate based on a hypothetical strong answer.";
+      await submitAnswerLogic(answerToSubmit);
+  }
 
-  const handleSubmitAnswer = async (e: FormEvent) => {
-    e.preventDefault();
-    if (interviewType === 'text' && !userAnswer.trim()) {
-      toast({ variant: 'destructive', title: 'Please provide an answer.' });
-      return;
-    }
-
-    if (isRecording) {
-      handleStopRecording();
-      return;
-    }
-
+  const submitAnswerLogic = async (answerToSubmit: string) => {
     setIsLoading(true);
-
-    // Placeholder for audio/video processing
-    const answerToSubmit = interviewType === 'text' ? userAnswer : "User provided an audio/video answer. Please evaluate based on a hypothetical strong answer.";
-
     try {
       const response = await generateMockInterviewQuestions({
         role,
@@ -151,6 +142,18 @@ export function InterviewSimulator() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const handleSubmitAnswer = async (e: FormEvent) => {
+    e.preventDefault();
+    if (interviewType === 'text') {
+        if (!userAnswer.trim()) {
+            toast({ variant: 'destructive', title: 'Please provide an answer.' });
+            return;
+        }
+        await submitAnswerLogic(userAnswer);
+    }
+    // For audio/video, submission is handled by handleStopRecording -> submitRecordedAnswer
   };
   
   const handleNextQuestion = async () => {
@@ -202,12 +205,10 @@ export function InterviewSimulator() {
     };
     mediaRecorderRef.current.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        // In a real app, you would now upload or process this audioBlob
         console.log('Recording stopped, blob created:', audioBlob);
         
-        // For now, we just proceed with the placeholder answer
-        // This will trigger the submit logic.
-        (document.getElementById('interview-form') as HTMLFormElement | null)?.requestSubmit();
+        // Directly call the submission logic for recorded answers
+        submitRecordedAnswer();
     };
     mediaRecorderRef.current.start();
   };
@@ -303,7 +304,7 @@ export function InterviewSimulator() {
       )}
 
       {interviewState === 'started' && (
-        <form onSubmit={handleSubmitAnswer} id="interview-form">
+        <form onSubmit={handleSubmitAnswer}>
           <CardContent className="space-y-4 pt-6">
             <div className="flex gap-3">
               <Bot className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
@@ -356,9 +357,8 @@ export function InterviewSimulator() {
                 </Button>
             )}
             {interviewType !== 'text' && (
-                <Button type="submit" disabled={isLoading || isGettingQuestion || isRecording}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Submit
+                <Button type="button" onClick={handleStopRecording} disabled={isLoading || isGettingQuestion || !isRecording}>
+                  Submit
                 </Button>
             )}
           </CardFooter>
@@ -423,3 +423,5 @@ export function InterviewSimulator() {
     </Card>
   );
 }
+
+    
