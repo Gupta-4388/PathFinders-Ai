@@ -1,7 +1,6 @@
 
 'use client';
-import { AppLayout } from '../components/layout/app-layout';
-import { InterviewSimulator } from '../components/interview/interview-simulator';
+import { InterviewSimulator } from '../../components/interview/interview-simulator';
 
 function InterviewPageContent() {
   return (
@@ -13,8 +12,6 @@ function InterviewPageContent() {
 
 export default function InterviewPage() {
   return (
-    <AppLayout>
       <InterviewPageContent />
-    </AppLayout>
   );
 }

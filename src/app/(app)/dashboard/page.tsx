@@ -1,8 +1,7 @@
 
 'use client';
-import { AppLayout } from '../components/layout/app-layout';
-import { CareerPaths } from '../components/dashboard/career-paths';
-import { WelcomeHeader } from '../components/dashboard/welcome-header';
+import { CareerPaths } from '../../components/dashboard/career-paths';
+import { WelcomeHeader } from '../../components/dashboard/welcome-header';
 
 function DashboardPageContent() {
   return (
@@ -33,8 +32,6 @@ function DashboardPageContent() {
 
 export default function DashboardPage() {
   return (
-    <AppLayout>
       <DashboardPageContent />
-    </AppLayout>
   );
 }

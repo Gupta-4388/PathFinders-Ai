@@ -1,11 +1,9 @@
 
-import { AppLayout } from "../components/layout/app-layout";
-import { ResumeParser } from "../components/dashboard/resume-parser";
-import { JobTrendsSummary } from "../components/dashboard/job-trends-summary";
+import { ResumeParser } from "../../components/dashboard/resume-parser";
+import { JobTrendsSummary } from "../../components/dashboard/job-trends-summary";
 
 export default function ResumeAnalyzerPage() {
   return (
-    <AppLayout>
       <div className="space-y-8">
         <div>
           <h1 className="font-headline text-3xl md:text-4xl font-bold tracking-tight">
@@ -22,6 +20,5 @@ export default function ResumeAnalyzerPage() {
           <JobTrendsSummary />
         </div>
       </div>
-    </AppLayout>
   );
 }

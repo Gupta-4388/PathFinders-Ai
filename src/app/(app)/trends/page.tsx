@@ -1,11 +1,10 @@
-import { AppLayout } from "../components/layout/app-layout";
-import { SkillDemandChart } from "../components/trends/skill-demand-chart";
-import { SalaryTrendsChart } from "../components/trends/salary-trends-chart";
-import { JobOpeningsChart } from "../components/trends/job-openings-chart";
+
+import { SkillDemandChart } from "../../components/trends/skill-demand-chart";
+import { SalaryTrendsChart } from "../../components/trends/salary-trends-chart";
+import { JobOpeningsChart } from "../../components/trends/job-openings-chart";
 
 export default function TrendsPage() {
   return (
-    <AppLayout>
       <div className="space-y-8">
         <div>
           <h1 className="font-headline text-3xl md:text-4xl font-bold tracking-tight">
@@ -23,6 +22,5 @@ export default function TrendsPage() {
           </div>
         </div>
       </div>
-    </AppLayout>
   );
 }

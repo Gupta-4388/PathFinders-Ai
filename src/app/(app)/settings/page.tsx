@@ -1,13 +1,13 @@
+
 'use client';
-import { AppLayout } from '../components/layout/app-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useProfile } from '../contexts/profile-context';
-import { ChangePasswordForm } from '../components/auth/change-password-form';
-import { AppearanceForm } from '../components/settings/appearance-form';
+import { useProfile } from '../../contexts/profile-context';
+import { ChangePasswordForm } from '../../components/auth/change-password-form';
+import { AppearanceForm } from '../../components/settings/appearance-form';
 
 function SettingsPageContent() {
     const { name, setName, goals, setGoals } = useProfile();
@@ -47,16 +47,14 @@ function SettingsPageContent() {
                     <Button onClick={handleSave}>Save Changes</Button>
                 </CardContent>
             </Card>
-            <ChangePasswordForm />
             <AppearanceForm />
+            <ChangePasswordForm />
         </div>
     );
 }
 
 export default function SettingsPage() {
     return (
-        <AppLayout>
             <SettingsPageContent />
-        </AppLayout>
     );
 }

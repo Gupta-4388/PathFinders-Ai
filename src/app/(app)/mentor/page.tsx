@@ -1,12 +1,9 @@
 
 'use client';
-import { AppLayout } from '../components/layout/app-layout';
-import { ChatInterface } from '../components/mentor/chat-interface';
+import { ChatInterface } from '../../components/mentor/chat-interface';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useResume } from '../contexts/resume-context';
 
 function MentorPageContent() {
-  const { resumeData } = useResume();
   return (
     <div className="h-[calc(100vh-10rem)]">
         <div className="h-full">
@@ -26,8 +23,6 @@ function MentorPageContent() {
 
 export default function MentorPage() {
   return (
-    <AppLayout>
       <MentorPageContent />
-    </AppLayout>
   );
 }
