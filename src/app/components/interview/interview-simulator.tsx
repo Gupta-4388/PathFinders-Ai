@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Bot, Star, ArrowLeft, BrainCircuit, CheckCircle, Video, Mic, Type, AlertCircle } from 'lucide-react';
+import { Loader2, Bot, Star, ArrowLeft, BrainCircuit, CheckCircle, Video, Mic, Type, AlertCircle, Square } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -37,9 +37,14 @@ export function InterviewSimulator() {
   const [results, setResults] = useState<InterviewResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGettingQuestion, setIsGettingQuestion] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  
   const { toast } = useToast();
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState(true);
 
   useEffect(() => {
@@ -50,8 +55,9 @@ export function InterviewSimulator() {
             video: interviewType === 'video', 
             audio: true 
           });
+          mediaStreamRef.current = stream;
           setHasCameraPermission(true);
-          if (videoRef.current) {
+          if (videoRef.current && interviewType === 'video') {
             videoRef.current.srcObject = stream;
           }
         } catch (error) {
@@ -67,9 +73,8 @@ export function InterviewSimulator() {
       getPermissions();
 
       return () => {
-        if (videoRef.current && videoRef.current.srcObject) {
-          const stream = videoRef.current.srcObject as MediaStream;
-          stream.getTracks().forEach(track => track.stop());
+        if (mediaStreamRef.current) {
+          mediaStreamRef.current.getTracks().forEach(track => track.stop());
         }
       }
     }
@@ -106,6 +111,12 @@ export function InterviewSimulator() {
       toast({ variant: 'destructive', title: 'Please provide an answer.' });
       return;
     }
+
+    if (isRecording) {
+      handleStopRecording();
+      return;
+    }
+
     setIsLoading(true);
 
     // Placeholder for audio/video processing
@@ -160,6 +171,53 @@ export function InterviewSimulator() {
         setIsGettingQuestion(false);
     }
   };
+
+  const handleStartRecording = () => {
+    if (!mediaStreamRef.current) {
+        toast({ variant: 'destructive', title: 'Media stream not available.' });
+        return;
+    }
+    setIsRecording(true);
+    audioChunksRef.current = [];
+    
+    // Choose a MIME type that is likely to be supported
+    const options = { mimeType: 'audio/webm; codecs=opus' };
+    try {
+      mediaRecorderRef.current = new MediaRecorder(mediaStreamRef.current, options);
+    } catch (e) {
+      console.warn(`'${options.mimeType}' not supported, trying default.`);
+      try {
+        mediaRecorderRef.current = new MediaRecorder(mediaStreamRef.current);
+      } catch (e2) {
+        toast({ variant: 'destructive', title: 'Recording failed', description: 'Could not create MediaRecorder.' });
+        setIsRecording(false);
+        return;
+      }
+    }
+    
+    mediaRecorderRef.current.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+        }
+    };
+    mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        // In a real app, you would now upload or process this audioBlob
+        console.log('Recording stopped, blob created:', audioBlob);
+        
+        // For now, we just proceed with the placeholder answer
+        // This will trigger the submit logic.
+        (document.getElementById('interview-form') as HTMLFormElement | null)?.requestSubmit();
+    };
+    mediaRecorderRef.current.start();
+  };
+
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+        setIsRecording(false);
+    }
+  };
   
   const resetInterview = () => {
     setRole('');
@@ -174,6 +232,14 @@ export function InterviewSimulator() {
 
   const totalScore = results.reduce((sum, r) => sum + (r.score || 0), 0);
   const averageScore = results.length > 0 ? totalScore / results.length : 0;
+
+  const handleRecordButtonClick = () => {
+      if(isRecording) {
+          handleStopRecording();
+      } else {
+          handleStartRecording();
+      }
+  }
 
   return (
     <Card className="bg-card/60 backdrop-blur-sm border-white/20 shadow-lg">
@@ -237,7 +303,7 @@ export function InterviewSimulator() {
       )}
 
       {interviewState === 'started' && (
-        <form onSubmit={handleSubmitAnswer}>
+        <form onSubmit={handleSubmitAnswer} id="interview-form">
           <CardContent className="space-y-4 pt-6">
             <div className="flex gap-3">
               <Bot className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
@@ -259,7 +325,7 @@ export function InterviewSimulator() {
                 />
             ) : (
                 <div className="bg-secondary rounded-lg p-4 space-y-4">
-                    <video ref={videoRef} className={`w-full aspect-video rounded-md bg-black ${interviewType !== 'video' ? 'hidden' : ''}`} autoPlay muted />
+                    <video ref={videoRef} className={`w-full aspect-video rounded-md bg-black ${interviewType !== 'video' ? 'hidden' : ''}`} autoPlay muted playsInline />
                     {!hasCameraPermission && (
                          <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
@@ -270,11 +336,11 @@ export function InterviewSimulator() {
                         </Alert>
                     )}
                     <div className="text-center">
-                        <Button type="button" variant="destructive" size="lg" disabled={isLoading}>
-                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mic className="mr-2 h-4 w-4" />}
-                            {isLoading ? 'Processing...' : 'Start Recording'}
+                        <Button type="button" variant={isRecording ? 'destructive' : 'default'} size="lg" onClick={handleRecordButtonClick} disabled={isLoading || isGettingQuestion}>
+                            {isRecording ? <Square className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
+                            {isRecording ? 'Stop Recording' : 'Start Recording'}
                         </Button>
-                        <p className="text-xs text-muted-foreground mt-2">Audio/video recording coming soon.</p>
+                        <p className="text-xs text-muted-foreground mt-2">Speech-to-text coming soon.</p>
                     </div>
                 </div>
             )}
@@ -283,10 +349,18 @@ export function InterviewSimulator() {
             <Button variant="outline" onClick={resetInterview} type="button">
               <ArrowLeft className="mr-2 h-4 w-4" /> End Interview
             </Button>
-            <Button type="submit" disabled={isLoading || isGettingQuestion}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Submit Answer
-            </Button>
+            {interviewType === 'text' && (
+                <Button type="submit" disabled={isLoading || isGettingQuestion}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Submit Answer
+                </Button>
+            )}
+            {interviewType !== 'text' && (
+                <Button type="submit" disabled={isLoading || isGettingQuestion || isRecording}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Submit
+                </Button>
+            )}
           </CardFooter>
         </form>
       )}
