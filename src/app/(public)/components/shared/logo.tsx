@@ -12,8 +12,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
-import { Logo } from './(public)/components/shared/logo';
-import { AuthDialog } from './(public)/components/auth/auth-dialog';
+import { Logo } from './components/shared/logo';
+import { AuthDialog } from './components/auth/auth-dialog';
 import { useUser } from '@/firebase/auth/use-user';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -142,7 +142,6 @@ function LandingPageContent() {
   );
 }
 
-
 export default function RootPage() {
     const { user, loading } = useUser();
     const router = useRouter();
@@ -153,7 +152,7 @@ export default function RootPage() {
         }
     }, [user, loading, router]);
 
-    if (loading) {
+    if (loading || user) {
       return (
         <div className="flex h-screen w-full items-center justify-center">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -161,15 +160,5 @@ export default function RootPage() {
       );
     }
     
-    if (user) {
-      // User is logged in and we are redirecting, so show a loader
-      return (
-        <div className="flex h-screen w-full items-center justify-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        </div>
-      );
-    }
-
-    // User is not logged in, show the landing page
     return <LandingPageContent />;
 }

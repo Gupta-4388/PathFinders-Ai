@@ -160,6 +160,5 @@ export default function RootPage() {
       );
     }
     
-    // User is not logged in, show the landing page
     return <LandingPageContent />;
 }
