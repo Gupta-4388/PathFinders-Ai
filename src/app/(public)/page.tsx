@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -13,8 +12,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
-import { Logo } from './components/shared/logo';
-import { AuthDialog } from './components/auth/auth-dialog';
+import { Logo } from './(public)/components/shared/logo';
+import { AuthDialog } from './(public)/components/auth/auth-dialog';
+import { useUser } from '@/firebase/auth/use-user';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 const features = [
   {
@@ -49,7 +52,7 @@ const features = [
   },
 ];
 
-export default function LandingPageContent() {
+function LandingPageContent() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -137,4 +140,36 @@ export default function LandingPageContent() {
       </footer>
     </div>
   );
+}
+
+
+export default function RootPage() {
+    const { user, loading } = useUser();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && user) {
+            router.replace('/dashboard');
+        }
+    }, [user, loading, router]);
+
+    if (loading) {
+      return (
+        <div className="flex h-screen w-full items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      );
+    }
+    
+    if (user) {
+      // User is logged in and we are redirecting, so show a loader
+      return (
+        <div className="flex h-screen w-full items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    // User is not logged in, show the landing page
+    return <LandingPageContent />;
 }

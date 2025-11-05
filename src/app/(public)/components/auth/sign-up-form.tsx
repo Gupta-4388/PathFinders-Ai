@@ -1,132 +1,175 @@
-
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+  ArrowRight,
+  BrainCircuit,
+  Briefcase,
+  FileText,
+  LineChart,
+  MessageCircle,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
+import { Logo } from './(public)/components/shared/logo';
+import { AuthDialog } from './(public)/components/auth/auth-dialog';
+import { useUser } from '@/firebase/auth/use-user';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useFirebase } from '@/firebase';
-import { createUserWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email.' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
-});
+const features = [
+  {
+    icon: <FileText className="w-8 h-8 text-primary" />,
+    title: 'Resume Parsing',
+    description:
+      'Instantly extract and analyze your skills and experience by uploading your resume.',
+  },
+  {
+    icon: <MessageCircle className="w-8 h-8 text-primary" />,
+    title: 'AI Chat Mentor',
+    description:
+      'Get personalized career advice and skill-gap analysis from our AI-powered mentor.',
+  },
+  {
+    icon: <Briefcase className="w-8 h-8 text-primary" />,
+    title: 'Career Path Visualization',
+    description:
+      'Discover your top 3 career paths with required skills, growth stats, and a visual roadmap.',
+  },
+  {
+    icon: <LineChart className="w-8 h-8 text-primary" />,
+    title: 'Job Market Trends',
+    description:
+      'Stay ahead with real-time data on skill demand, salary benchmarks, and job openings.',
+  },
+  {
+    icon: <BrainCircuit className="w-8 h-8 text-primary" />,
+    title: 'Mock Interview Simulator',
+    description:
+      'Practice role-specific questions and get instant feedback to ace your next interview.',
+  },
+];
 
-export function SignUpForm() {
-  const { auth, firestore } = useFirebase();
-  const router = useRouter();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: '', email: '', password: '' },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      
-      await setDoc(doc(firestore, 'users', user.uid), {
-        id: user.uid,
-        name: values.name,
-        email: values.email,
-        creationDate: new Date().toISOString(),
-      });
-      
-      toast({ title: 'Account created successfully!' });
-      router.push('/dashboard');
-
-    } catch (error: any) {
-      let title = 'An error occurred.';
-      let description = 'Please try again.';
-      if (error.code === AuthErrorCodes.EMAIL_EXISTS) {
-        title = 'Email already in use.';
-        description = 'Please try signing in or use a different email.';
-      } else if (error.code === AuthErrorCodes.WEAK_PASSWORD) {
-        title = 'Weak Password';
-        description = 'Your password should be at least 6 characters long.';
-      }
-      toast({ variant: 'destructive', title, description });
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
+function LandingPageContent() {
   return (
-    <Card className="w-full max-w-sm sm:max-w-md bg-transparent border-0 shadow-none">
-      <CardHeader className="text-center">
-        <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
-        <CardDescription>Enter your details to get started.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john.doe@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign Up
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col min-h-screen bg-background">
+      <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <Link href="/">
+            <Logo />
+        </Link>
+        <div className="flex items-center gap-2 sm:gap-4">
+           <AuthDialog>
+            <Button variant="ghost" size="sm">Sign In</Button>
+          </AuthDialog>
+          <AuthDialog>
+            <Button size="sm">Sign Up</Button>
+          </AuthDialog>
+        </div>
+      </header>
+
+      <main className="flex-grow">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter text-foreground">
+              Unlock Your Career Potential with PathFinders AI
+            </h1>
+            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Empowering every self-learner with AI-driven career guidance. Get personalized insights, practice interviews, and discover your ideal career path.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+              <AuthDialog>
+                <Button size="lg">
+                    Explore
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </AuthDialog>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="bg-card/60 backdrop-blur-sm border-white/20 shadow-lg hover:shadow-primary/10 transition-shadow">
+                <CardHeader className="flex flex-row items-center gap-4">
+                  {feature.icon}
+                  <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section id="about" className="bg-secondary/50 py-16 md:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
+            <div className="md:w-1/2">
+              <Image
+                data-ai-hint="artificial intelligence"
+                src="https://images.unsplash.com/photo-1674027444485-cec3da58eef4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2MjA1MjI4NHww&ixlib=rb-4.1.0&q=80&w=1080"
+                alt="Our Mission"
+                width={600}
+                height={400}
+                className="rounded-lg shadow-2xl"
+              />
+            </div>
+            <div className="md:w-1/2">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
+                Our Mission
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                To empower every self-learner with intelligent, personalized, and accessible AI-driven career guidance. We believe that with the right tools, anyone can navigate the complexities of the modern job market and build a fulfilling career.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-foreground text-background">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
+          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} PathFinders AI. All rights reserved.</p>
+          <div className="flex gap-4 mt-4 sm:mt-0">
+            <Link href="#" className="text-sm hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link href="#" className="text-sm hover:text-primary transition-colors">Terms of Service</Link>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
+}
+
+
+export default function RootPage() {
+    const { user, loading } = useUser();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && user) {
+            router.replace('/dashboard');
+        }
+    }, [user, loading, router]);
+
+    if (loading) {
+      return (
+        <div className="flex h-screen w-full items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      );
+    }
+    
+    if (user) {
+      // User is logged in and we are redirecting, so show a loader
+      return (
+        <div className="flex h-screen w-full items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    // User is not logged in, show the landing page
+    return <LandingPageContent />;
 }
